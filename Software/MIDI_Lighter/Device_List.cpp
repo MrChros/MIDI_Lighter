@@ -52,6 +52,7 @@ MIDI_Lighter::Device_List::Device_List()
 			gcnew System::Windows::Forms::DataGridViewTextBoxColumn(),
 			gcnew System::Windows::Forms::DataGridViewTextBoxColumn()
 		});
+		_DataGrid_Devices->SelectionChanged += gcnew System::EventHandler(this, &MIDI_Lighter::Device_List::DataGrid_Devices_OnSelectionChanged);
 
 		_DataGrid_Devices->Columns[0]->HeaderText	= "#";
 		_DataGrid_Devices->Columns[0]->Width		= 40;
@@ -67,17 +68,17 @@ MIDI_Lighter::Device_List::Device_List()
 		_Label_Number_Devices->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 	Table_Layout_Main->Controls->Add(_Label_Number_Devices, 0, 3);
 
-
-
-	_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (_DataGrid_Devices->RowCount + 1).ToString(), "Test " + (_DataGrid_Devices->RowCount + 1).ToString()});
-	_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (_DataGrid_Devices->RowCount + 1).ToString(), "Test " + (_DataGrid_Devices->RowCount + 1).ToString()});
-	_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (_DataGrid_Devices->RowCount + 1).ToString(), "Test " + (_DataGrid_Devices->RowCount + 1).ToString()});
-	_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (_DataGrid_Devices->RowCount + 1).ToString(), "Test " + (_DataGrid_Devices->RowCount + 1).ToString()});
-	_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (_DataGrid_Devices->RowCount + 1).ToString(), "Test " + (_DataGrid_Devices->RowCount + 1).ToString()});
-
-
 	this->Controls->Add(Table_Layout_Main);
 
+
+	_Timer_Poll_Connection = gcnew System::Windows::Forms::Timer;
+	_Timer_Poll_Connection->Interval = 100;
+	_Timer_Poll_Connection->Tick += gcnew System::EventHandler(this, &Device_List::Timer_Poll_Connection_Tick);
+
+	_Current_USB_Connection_Status = USB_CONNECTION::DISCONNECTED;
+
+	GUI_USB_Disconnect_Update();
+	Button_Refresh_Click(nullptr, System::EventArgs::Empty);
 	Label_Number_Devices_Update();
 }
 
@@ -95,6 +96,72 @@ System::Void MIDI_Lighter::Device_List::Button_Refresh_Click(System::Object ^ se
 	Label_Number_Devices_Update();
 }
 
+System::Void MIDI_Lighter::Device_List::DataGrid_Devices_OnSelectionChanged(System::Object^ sender, System::EventArgs^ e)
+{
+	int Selected_Index = -1;
+
+	System::Windows::Forms::DataGridViewSelectedRowCollection^ Rows = _DataGrid_Devices->SelectedRows;
+	for each(System::Windows::Forms::DataGridViewRow^ Row in Rows)
+	{
+		Selected_Index = Row->Index;
+	}
+
+	if (_MIDI_Lighter->IsConnected())
+	{
+		_MIDI_Lighter->Disconnect();
+		GUI_USB_Disconnect_Update();
+
+		_Current_USB_Connection_Status = USB_CONNECTION::DISCONNECTED;
+	}
+
+	if (Selected_Index >= 0)
+	{
+		if (_MIDI_Lighter->Connect(Selected_Index))
+		{
+			GUI_USB_Connect_Update();
+			_Current_USB_Connection_Status = USB_CONNECTION::CONNECTED;
+			_Timer_Poll_Connection->Start();
+
+			Sync_Status_Update(SYNC_STATUS::SYNCING);
+
+			System::Boolean^ Success;
+
+			MIDI_Lighter_Wrapper::Configuration_MIDI^ Configuration_MIDI = _MIDI_Lighter->Get_Configuration_MIDI(Success);
+			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
+			Configuration_MIDI_Update(Configuration_MIDI);
+
+			MIDI_Lighter_Wrapper::Configuration_No_Data_Light^ Configuration_No_Data_Light = _MIDI_Lighter->Get_Configuration_No_Data_Light(Success);
+			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
+			Configuration_No_Data_Light_Update(Configuration_No_Data_Light);
+
+			MIDI_Lighter_Wrapper::Configuration_Permanent_Light^ Configuration_Permanent_Light = _MIDI_Lighter->Get_Configuration_Permanent_Light(Success);
+			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
+			Configuration_Permanent_Light_Update(Configuration_Permanent_Light);
+
+			MIDI_Lighter_Wrapper::Device^ Device = gcnew MIDI_Lighter_Wrapper::Device();
+			Device->Name = _MIDI_Lighter->Get_Device_Name(Success);
+			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
+			Configuration_Device_Update(Device);
+
+			MIDI_Lighter_Wrapper::Configuration_RGB_Order^ Configuration_RGB_Order = _MIDI_Lighter->Get_Configuration_RGB_Order(Success);
+			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
+			Configuration_RGB_Order_Update(Configuration_RGB_Order);
+
+			Sync_Status_Update(SYNC_STATUS::SYNCED);
+		}
+		else
+		{
+			System::Windows::Forms::MessageBox::Show(
+				"Connection failed",
+				"Error", System::Windows::Forms::MessageBoxButtons::OK,
+				System::Windows::Forms::MessageBoxIcon::Error);
+
+			_Current_USB_Connection_Status = USB_CONNECTION::FAILED;
+		}
+	}
+	Connection_Changed(_Current_USB_Connection_Status);
+}
+
 System::Void MIDI_Lighter::Device_List::Label_Number_Devices_Update()
 {
 	if (_DataGrid_Devices->RowCount == 1)
@@ -104,5 +171,137 @@ System::Void MIDI_Lighter::Device_List::Label_Number_Devices_Update()
 	else
 	{
 		_Label_Number_Devices->Text = _DataGrid_Devices->RowCount.ToString() + " Devices Found";
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::Timer_Poll_Connection_Tick(System::Object^ sender, System::EventArgs^ e)
+{
+	if (_Current_USB_Connection_Status == USB_CONNECTION::CONNECTED)
+	{
+		if (_MIDI_Lighter->IsConnected() == false)
+		{
+			_Current_USB_Connection_Status = USB_CONNECTION::LOST;
+			Connection_Changed(_Current_USB_Connection_Status);
+
+			GUI_USB_Disconnect_Update();
+			Button_Refresh_Click(nullptr, System::EventArgs::Empty);
+		}
+	}
+	else
+	{
+		_Timer_Poll_Connection->Stop();
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::GUI_USB_Connect_Update()
+{
+
+}
+
+System::Void MIDI_Lighter::Device_List::GUI_USB_Disconnect_Update()
+{
+	Sync_Status_Update(SYNC_STATUS::UNKNOWN);
+}
+
+System::Void MIDI_Lighter::Device_List::Update_Configuration_MIDI(MIDI_Lighter_Wrapper::Configuration_MIDI^ configuration_midi)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		Sync_Status_Update(SYNC_STATUS::SYNCING);
+		if (!_MIDI_Lighter->Set_Configuration_MIDI(configuration_midi))
+		{
+			Sync_Status_Update(SYNC_STATUS::FAILED);
+		}
+		Sync_Status_Update(SYNC_STATUS::SYNCED);
+
+		Configuration_Changed(true);
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::Update_Configuration_No_Data_Light(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^ configuration_no_data_light)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		Sync_Status_Update(SYNC_STATUS::SYNCING);
+		if (!_MIDI_Lighter->Set_Configuration_No_Data_Light(configuration_no_data_light))
+		{
+			Sync_Status_Update(SYNC_STATUS::FAILED);
+		}
+		Sync_Status_Update(SYNC_STATUS::SYNCED);
+
+		Configuration_Changed(true);
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::Update_Configuration_Permanent_Light(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^ configuration_permanent_light)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		Sync_Status_Update(SYNC_STATUS::SYNCING);
+		if (!_MIDI_Lighter->Set_Configuration_Permanent_Light(configuration_permanent_light))
+		{
+			Sync_Status_Update(SYNC_STATUS::FAILED);
+		}
+		Sync_Status_Update(SYNC_STATUS::SYNCED);
+
+		Configuration_Changed(true);
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::Update_Device(MIDI_Lighter_Wrapper::Device^ device)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		Sync_Status_Update(SYNC_STATUS::SYNCING);
+		if (!_MIDI_Lighter->Set_Device_Name(device->Name))
+		{
+			Sync_Status_Update(SYNC_STATUS::FAILED);
+		}
+
+		// Update name in list here...
+
+//		int Index = _ComboBox_Devices->SelectedIndex;
+//		_ComboBox_Devices->Items->Remove(_ComboBox_Devices->SelectedItem);
+//		_ComboBox_Devices->Items->Insert(Index, Index.ToString() + ": " + device->Name);
+//		_ComboBox_Devices->SelectedIndex = Index;
+
+		Sync_Status_Update(SYNC_STATUS::SYNCED);
+
+		Configuration_Changed(true);
+	}
+}
+
+System::Void MIDI_Lighter::Device_List::Update_Configuration_RGB_Order(MIDI_Lighter_Wrapper::Configuration_RGB_Order^ configuration_rgb_order)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		Sync_Status_Update(SYNC_STATUS::SYNCING);
+		if (!_MIDI_Lighter->Set_Configuration_RGB_Order(configuration_rgb_order))
+		{
+			Sync_Status_Update(SYNC_STATUS::FAILED);
+		}
+		Sync_Status_Update(SYNC_STATUS::SYNCED);
+
+		Configuration_Changed(true);
+	}
+}
+
+System::Byte MIDI_Lighter::Device_List::Read_EEPROM(uint32_t address)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		System::Boolean^ Success = gcnew System::Boolean;
+		return _MIDI_Lighter->Read_EEPROM(address, Success);
+	}
+	return 0;
+}
+
+System::Void MIDI_Lighter::Device_List::Update_EEPROM()
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		_MIDI_Lighter->Write_EEPROM();
+
+		Configuration_Changed(false);
 	}
 }

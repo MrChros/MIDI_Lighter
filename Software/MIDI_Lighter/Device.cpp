@@ -1,26 +1,25 @@
 #include "Device.h"
 
-MIDI_Lighter::Device::Device()
+MIDI_Lighter::Device::Device(MIDI_Lighter::Device_List^ device_list)
 {
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
 	System::Windows::Forms::TableLayoutPanel^ Table_Layout_Main = gcnew System::Windows::Forms::TableLayoutPanel();
-	Table_Layout_Main->RowCount = 6;
-	Table_Layout_Main->ColumnCount = 2;
+	Table_Layout_Main->RowCount		= 5;
+	Table_Layout_Main->ColumnCount	= 2;
 	Table_Layout_Main->Dock = System::Windows::Forms::DockStyle::Fill;
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 55)));		// 0
+	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  5)));		// 0
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 58)));		// 1
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));		// 2
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 68)));		// 3
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 60)));		// 4
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));		// 5
-	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 50)));	// 0
-	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 50)));	// 1
+	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 40)));	// 0
+	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 60)));	// 1
 
 		_Configuration_MIDI = gcnew MIDI_Lighter::Configuration_MIDI();
 		_Configuration_MIDI->Dock = System::Windows::Forms::DockStyle::Fill;
 	Table_Layout_Main->Controls->Add(_Configuration_MIDI, 0, 1);
-	Table_Layout_Main->SetRowSpan(_Configuration_MIDI, 3);
+	Table_Layout_Main->SetRowSpan(_Configuration_MIDI, 4);
 
 		_Configuration_No_Data_Light = gcnew MIDI_Lighter::Configuration_No_Data_Light();
 		_Configuration_No_Data_Light->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -39,70 +38,62 @@ MIDI_Lighter::Device::Device()
 	Table_Layout_Main->Controls->Add(_Device_Name, 1, 4);
 
 
-	MIDI_Lighter::Connection^ Connection = gcnew MIDI_Lighter::Connection();
-	Connection->Dock = System::Windows::Forms::DockStyle::Fill;
-	Connection->Connection_Changed						+= gcnew MIDI_Lighter::Connection_Changed(this, &Device::Connection_Connection_Changed);
-	Connection->Sync_Status_Update						+= gcnew MIDI_Lighter::Sync_Status_Update(this, &Device::Sync_Status_Changed);
-	Connection->Configuration_MIDI_Update				+= gcnew MIDI_Lighter::Configuration_MIDI_Update(_Configuration_MIDI, &MIDI_Lighter::Configuration_MIDI::Update);
-	Connection->Configuration_No_Data_Light_Update		+= gcnew MIDI_Lighter::Configuration_No_Data_Light_Update(_Configuration_No_Data_Light, &MIDI_Lighter::Configuration_No_Data_Light::Update);
-	Connection->Configuration_Permanent_Light_Update	+= gcnew MIDI_Lighter::Configuration_Permanent_Light_Update(_Configuration_Permanent_Light, &MIDI_Lighter::Configuration_Permanent_Light::Update);
-	Connection->Configuration_Device_Update				+= gcnew MIDI_Lighter::Configuration_Device_Update(_Device_Name, &MIDI_Lighter::Device_Name::Update);
-	Connection->Configuration_RGB_Order_Update			+= gcnew MIDI_Lighter::Configuration_RGB_Order_Update(_Configuration_RGB_Order, &MIDI_Lighter::Configuration_RGB_Order::Update);
-	Connection->Configuration_Changed					+= gcnew MIDI_Lighter::Configuration_Changed(this, &Device::Configuration_Changed);
-	Table_Layout_Main->Controls->Add(Connection, 0, 0);
-	Table_Layout_Main->SetColumnSpan(Connection, 2);
+	_Configuration_MIDI->Update_Values					+= gcnew MIDI_Lighter::Update_Values_Configuration_MIDI				(this, &MIDI_Lighter::Device::Update_Configuration_MIDI);
+	_Configuration_No_Data_Light->Update_Values			+= gcnew MIDI_Lighter::Update_Values_Configuration_No_Data_Light	(this, &MIDI_Lighter::Device::Update_Configuration_No_Data_Light);
+	_Configuration_Permanent_Light->Update_Values		+= gcnew MIDI_Lighter::Update_Values_Configuration_Permanent_Light	(this, &MIDI_Lighter::Device::Update_Configuration_Permanent_Light);
+	_Device_Name->Update_Values							+= gcnew MIDI_Lighter::Update_Values_Device							(this, &MIDI_Lighter::Device::Update_Device);
+	_Configuration_RGB_Order->Update_Values				+= gcnew MIDI_Lighter::Update_Values_Configuration_RGB_Order		(this, &MIDI_Lighter::Device::Update_Configuration_RGB_Order);
 
 
-	_Configuration_MIDI->Update_Values					+= gcnew MIDI_Lighter::Update_Values_Configuration_MIDI(Connection, &MIDI_Lighter::Connection::Update_Configuration_MIDI);
-	_Configuration_No_Data_Light->Update_Values			+= gcnew MIDI_Lighter::Update_Values_Configuration_No_Data_Light(Connection, &MIDI_Lighter::Connection::Update_Configuration_No_Data_Light);
-	_Configuration_Permanent_Light->Update_Values		+= gcnew MIDI_Lighter::Update_Values_Configuration_Permanent_Light(Connection, &MIDI_Lighter::Connection::Update_Configuration_Permanent_Light);
-	_Device_Name->Update_Values							+= gcnew MIDI_Lighter::Update_Values_Device(Connection, &MIDI_Lighter::Connection::Update_Device);
-	_Configuration_RGB_Order->Update_Values				+= gcnew MIDI_Lighter::Update_Values_Configuration_RGB_Order(Connection, &MIDI_Lighter::Connection::Update_Configuration_RGB_Order);
-
-
-	System::Windows::Forms::Button^ Button_Read_EEPROM = gcnew System::Windows::Forms::Button();
-	Button_Read_EEPROM->Dock = System::Windows::Forms::DockStyle::Top;
-	Button_Read_EEPROM->Text = "Read EEPROM (Debug)";
-	Button_Read_EEPROM->UseVisualStyleBackColor = true;
-	Button_Read_EEPROM->Click += gcnew System::EventHandler(this, &Device::Button_Read_EEPROM_Click);
+		System::Windows::Forms::Button^ Button_Read_EEPROM = gcnew System::Windows::Forms::Button();
+		Button_Read_EEPROM->Dock = System::Windows::Forms::DockStyle::Top;
+		Button_Read_EEPROM->Text = "Read EEPROM (Debug)";
+		Button_Read_EEPROM->UseVisualStyleBackColor = true;
+		Button_Read_EEPROM->Click += gcnew System::EventHandler(this, &Device::Button_Read_EEPROM_Click);
 	Table_Layout_Main->Controls->Add(Button_Read_EEPROM, 0, 5);
 
-	_Button_Write_EEPROM = gcnew System::Windows::Forms::Button();
-	_Button_Write_EEPROM->Dock = System::Windows::Forms::DockStyle::Top;
-	_Button_Write_EEPROM->Text = "Save Configuration to EEPROM";
-	_Button_Write_EEPROM->UseVisualStyleBackColor = true;
-	_Button_Write_EEPROM->Enabled = false;
-	_Button_Write_EEPROM->Click += gcnew System::EventHandler(Connection, &MIDI_Lighter::Connection::Update_EEPROM);
+		_Button_Write_EEPROM							= gcnew System::Windows::Forms::Button();
+		_Button_Write_EEPROM->Dock						= System::Windows::Forms::DockStyle::Top;
+		_Button_Write_EEPROM->Text						= "Save Configuration to EEPROM";
+		_Button_Write_EEPROM->UseVisualStyleBackColor	= true;
+		_Button_Write_EEPROM->Enabled					= false;
+		_Button_Write_EEPROM->Click					   += gcnew System::EventHandler(this, &MIDI_Lighter::Device::Button_Save_EEPROM_Click);
 	Table_Layout_Main->Controls->Add(_Button_Write_EEPROM, 1, 5);
 
 	this->Controls->Add(Table_Layout_Main);
 
-	_Status_Bar = gcnew MIDI_Lighter::Status_Bar();
-	this->Controls->Add(_Status_Bar);
-
-	_Connection = Connection;
 	_EEPROM_Write_Pending = false;
 
-	_LogProgress = gcnew LogProgress::LogProgress();
-	_Debug = gcnew MIDI_Lighter::Debug(_LogProgress, Connection);
-
-	Connection_Connection_Changed(MIDI_Lighter::USB_CONNECTION::DISCONNECTED);
+	_LogProgress	= gcnew LogProgress::LogProgress();
+	_Debug			= gcnew MIDI_Lighter::Debug(_LogProgress, device_list);
 }
 
-System::Void MIDI_Lighter::Device::Connection_Connection_Changed(MIDI_Lighter::USB_CONNECTION status)
+///////////////////////////////////////////////////
+// Setting Values received from MIDI Lighter PCB //
+///////////////////////////////////////////////////
+System::Void MIDI_Lighter::Device::Set_Configuration_MIDI(MIDI_Lighter_Wrapper::Configuration_MIDI^	configuration_midi)
 {
-	_Configuration_MIDI->Enabled			= status == MIDI_Lighter::USB_CONNECTION::CONNECTED;
-	_Configuration_No_Data_Light->Enabled	= status == MIDI_Lighter::USB_CONNECTION::CONNECTED;
-	_Configuration_Permanent_Light->Enabled = status == MIDI_Lighter::USB_CONNECTION::CONNECTED;
-	_Device_Name->Enabled					= status == MIDI_Lighter::USB_CONNECTION::CONNECTED;
-	_Configuration_RGB_Order->Enabled		= status == MIDI_Lighter::USB_CONNECTION::CONNECTED;
-
-	_Status_Bar->Update_USB_Connection_Status(status);
+	_Configuration_MIDI->Update(configuration_midi);
 }
 
-System::Void MIDI_Lighter::Device::Sync_Status_Changed(MIDI_Lighter::SYNC_STATUS status)
+System::Void MIDI_Lighter::Device::Set_Configuration_No_Data_Light(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^ configuration_no_data_light)
 {
-	_Status_Bar->Update_Sync_Status(status);
+	_Configuration_No_Data_Light->Update(configuration_no_data_light);
+}
+
+System::Void MIDI_Lighter::Device::Set_Configuration_Permanent_Light(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^ configuration_permanent_light)
+{
+	_Configuration_Permanent_Light->Update(configuration_permanent_light);
+}
+
+System::Void MIDI_Lighter::Device::Set_Configuration_Device(MIDI_Lighter_Wrapper::Device^ device)
+{
+	_Device_Name->Update(device);
+}
+
+System::Void MIDI_Lighter::Device::Set_Configuration_RGB_Order(MIDI_Lighter_Wrapper::Configuration_RGB_Order^ configuration_rgb_order)
+{
+	_Configuration_RGB_Order->Update(configuration_rgb_order);
 }
 
 System::Void MIDI_Lighter::Device::Configuration_Changed(System::Boolean pending)
@@ -120,6 +111,47 @@ System::Void MIDI_Lighter::Device::Configuration_Changed(System::Boolean pending
 	}
 }
 
+///////////////////////////////////////////////////////////////
+// Sending Signals, that values have been changed in the GUI //
+///////////////////////////////////////////////////////////////
+System::Void MIDI_Lighter::Device::Update_Configuration_MIDI(MIDI_Lighter_Wrapper::Configuration_MIDI^ configuration_midi)
+{
+	Changed_Configuration_MIDI(configuration_midi);
+}
+
+System::Void MIDI_Lighter::Device::Update_Configuration_No_Data_Light(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^ configuration_no_data_light)
+{
+	Changed_Configuration_No_Data_Light(configuration_no_data_light);
+}
+
+System::Void MIDI_Lighter::Device::Update_Configuration_Permanent_Light(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^ configuration_permanent_light)
+{
+	Changed_Configuration_Permanent_Light(configuration_permanent_light);
+}
+
+System::Void MIDI_Lighter::Device::Update_Device(MIDI_Lighter_Wrapper::Device^ device)
+{
+	Changed_Device_Name(device);
+}
+
+System::Void MIDI_Lighter::Device::Update_Configuration_RGB_Order(MIDI_Lighter_Wrapper::Configuration_RGB_Order^ configuration_rgb_order)
+{
+	Changed_Configuration_RGB_Order(configuration_rgb_order);
+}
+
+
+//////////////////////////////////////////////////
+// Internal function to save settings to EEPROM //
+//////////////////////////////////////////////////
+System::Void MIDI_Lighter::Device::Button_Save_EEPROM_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	EEPROM_Save();
+}
+
+
+//////////////////////////////////////
+// Internal function to read EEPROM //
+//////////////////////////////////////
 System::Void MIDI_Lighter::Device::Button_Read_EEPROM_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	System::Windows::Forms::SaveFileDialog^ SaveFileDialog_User_Page = gcnew System::Windows::Forms::SaveFileDialog();

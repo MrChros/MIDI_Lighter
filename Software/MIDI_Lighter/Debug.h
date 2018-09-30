@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Connection.h"
+#include "Device_List.h"
 #include "LogProgress.h"
 
 namespace MIDI_Lighter
@@ -8,7 +8,7 @@ namespace MIDI_Lighter
 	public ref class Debug : System::Object
 	{
 	public:
-		Debug(LogProgress::LogProgress^ logprogress, MIDI_Lighter::Connection^ connection);
+		Debug(LogProgress::LogProgress^ logprogress, MIDI_Lighter::Device_List^ device_list);
 
 		System::ComponentModel::BackgroundWorker^ Background_Worker_Read_EEPROM();
 	
@@ -17,7 +17,7 @@ namespace MIDI_Lighter
 
 	private:
 		LogProgress::LogProgress^	_LogProgress;
-		MIDI_Lighter::Connection^	_Connection;
+		MIDI_Lighter::Device_List^	_Device_List;
 
 		System::ComponentModel::BackgroundWorker^ _Background_Worker_Read_EEPROM;
 

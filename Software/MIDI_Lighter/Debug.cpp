@@ -1,9 +1,9 @@
 #include "Debug.h"
 
-MIDI_Lighter::Debug::Debug(LogProgress::LogProgress^ logprogress, MIDI_Lighter::Connection^ connection)
+MIDI_Lighter::Debug::Debug(LogProgress::LogProgress^ logprogress, MIDI_Lighter::Device_List^ device_list)
 {
 	_LogProgress	= logprogress;
-	_Connection		= connection;
+	_Device_List	= device_list;
 
 	_Background_Worker_Read_EEPROM = gcnew System::ComponentModel::BackgroundWorker();
 	_Background_Worker_Read_EEPROM->WorkerReportsProgress		= true;
@@ -79,7 +79,7 @@ System::Void MIDI_Lighter::Debug::Background_Worker_Read_EEPROM(System::Object^ 
 
 			for (uint32_t j = 0; j < Line_Break_Bytes && (i + j) <= EEPROM_END_ADDRESS; j++)
 			{
-				EEPROM_Data[j] = _Connection->Read_EEPROM(i + j);
+				EEPROM_Data[j] = _Device_List->Read_EEPROM(i + j);
 			}
 
 			for (uint32_t j = 0; j < Line_Break_Bytes; j++)

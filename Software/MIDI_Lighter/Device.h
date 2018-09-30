@@ -1,8 +1,7 @@
 #pragma once
 
+#include "Device_List.h"
 #include "Device_Name.h"
-#include "Status_Bar.h"
-#include "Connection.h"
 #include "Configuration_MIDI.h"
 #include "Configuration_RGB_Order.h"
 #include "Configuration_No_Data_Light.h"
@@ -12,39 +11,59 @@
 
 namespace MIDI_Lighter
 {
+	public delegate void Changed_Configuration_MIDI				(MIDI_Lighter_Wrapper::Configuration_MIDI^				configuration_midi);
+	public delegate void Changed_Configuration_No_Data_Light	(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^		configuration_no_data_light);
+	public delegate void Changed_Configuration_Permanent_Light	(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^	configuration_permantent_light);
+	public delegate void Changed_Device_Name					(MIDI_Lighter_Wrapper::Device^							device);
+	public delegate void Changed_Configuration_RGB_Order		(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
+	public delegate void EEPROM_Save							();
+
 	public ref class Device : public System::Windows::Forms::UserControl
 	{
 	public:
-		Device();
+		Device(MIDI_Lighter::Device_List^ device_list);
+
+		event Changed_Configuration_MIDI^					Changed_Configuration_MIDI;
+		event Changed_Configuration_No_Data_Light^			Changed_Configuration_No_Data_Light;
+		event Changed_Configuration_Permanent_Light^		Changed_Configuration_Permanent_Light;
+		event Changed_Device_Name^							Changed_Device_Name;
+		event Changed_Configuration_RGB_Order^				Changed_Configuration_RGB_Order;
+		event EEPROM_Save^									EEPROM_Save;
+
+		System::Void Set_Configuration_MIDI					(MIDI_Lighter_Wrapper::Configuration_MIDI^				configuration_midi);
+		System::Void Set_Configuration_No_Data_Light		(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^		configuration_no_data_light);
+		System::Void Set_Configuration_Permanent_Light		(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^	configuration_permanent_light);
+		System::Void Set_Configuration_Device				(MIDI_Lighter_Wrapper::Device^							device);
+		System::Void Set_Configuration_RGB_Order			(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
+
+		System::Void Configuration_Changed					(System::Boolean pending);
 
 	protected:
 		~Device() { };
 
 	private:
-		System::Resources::ResourceManager^				_Resources;
+		System::Resources::ResourceManager^					_Resources;
 
-		MIDI_Lighter::Connection^						_Connection;
-		MIDI_Lighter::Configuration_MIDI^				_Configuration_MIDI;
-		MIDI_Lighter::Configuration_No_Data_Light^		_Configuration_No_Data_Light;
-		MIDI_Lighter::Configuration_Permanent_Light^	_Configuration_Permanent_Light;
-		MIDI_Lighter::Device_Name^						_Device_Name;
-		MIDI_Lighter::Configuration_RGB_Order^			_Configuration_RGB_Order;
+		MIDI_Lighter::Configuration_MIDI^					_Configuration_MIDI;
+		MIDI_Lighter::Configuration_No_Data_Light^			_Configuration_No_Data_Light;
+		MIDI_Lighter::Configuration_Permanent_Light^		_Configuration_Permanent_Light;
+		MIDI_Lighter::Device_Name^							_Device_Name;
+		MIDI_Lighter::Configuration_RGB_Order^				_Configuration_RGB_Order;
 
-		System::Windows::Forms::Button^					_Button_Write_EEPROM;
+		System::Windows::Forms::Button^						_Button_Write_EEPROM;
 
-		MIDI_Lighter::Status_Bar^						_Status_Bar;
+		MIDI_Lighter::Debug^								_Debug;
+		LogProgress::LogProgress^							_LogProgress;
 
-		MIDI_Lighter::Debug^							_Debug;
-		LogProgress::LogProgress^						_LogProgress;
+		System::Boolean										_EEPROM_Write_Pending;
 
-		System::Boolean									_EEPROM_Write_Pending;
+		System::Void Update_Configuration_MIDI				(MIDI_Lighter_Wrapper::Configuration_MIDI^				configuration_midi);
+		System::Void Update_Configuration_No_Data_Light		(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^		configuration_no_data_light);
+		System::Void Update_Configuration_Permanent_Light	(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^	configuration_permanent_light);
+		System::Void Update_Device							(MIDI_Lighter_Wrapper::Device^							device);
+		System::Void Update_Configuration_RGB_Order			(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
 
-
-		System::Void Connection_Connection_Changed(MIDI_Lighter::USB_CONNECTION status);
-		System::Void Sync_Status_Changed(MIDI_Lighter::SYNC_STATUS status);
-
-		System::Void Configuration_Changed(System::Boolean pending);
-
-		System::Void Button_Read_EEPROM_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void Button_Save_EEPROM_Click				(System::Object^ sender, System::EventArgs^ e);
+		System::Void Button_Read_EEPROM_Click				(System::Object^ sender, System::EventArgs^ e);
 	};
 }

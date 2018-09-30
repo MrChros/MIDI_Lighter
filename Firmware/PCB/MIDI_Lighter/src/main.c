@@ -42,10 +42,10 @@
 /////////////////
 // LED Defines //
 /////////////////
-#define LED0	PF0
-#define LED1	PF1
-#define LED2	PF4
-#define LEDS	PF5
+#define LED0				PF0
+#define LED1				PF1
+#define LED2				PF4
+#define LEDS				PF5
 
 #define LED_ON(_LED_)		PORTF &= ~(1 << _LED_)
 #define LED_OFF(_LED_)		PORTF |= (1 << _LED_)
