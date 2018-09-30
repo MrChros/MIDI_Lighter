@@ -6,6 +6,7 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 
+#include "ADC.h"
 #include "USB.h"
 #include "Help.h"
 #include "MIDI.h"
@@ -89,6 +90,7 @@ int main (void)
 	///////////////////////////
 	// Module Initialization //
 	///////////////////////////
+//	ADC_Init(); // Not in use yet...
 	Configuration_Init();
 	Timer_And_Button_Init();
 	UART_Init();
