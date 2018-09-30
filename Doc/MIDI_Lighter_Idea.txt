@@ -1,0 +1,209 @@
+Midi-Kommando:
+=============
+- Konstante Länge von drei Byte
+
+1 Erstes Byte[7..4] enthalten Status (http://www.midi.org/specifications-old/item/table-1-summary-of-midi-message)
+1 Erstes Byte[3..0] enthalten MIDI Channel Number
+	- MIDI Channel kann man gleichetzten mit einem Instrument wie z.B. Schlagzeug
+1 Erstes Byte, Erkennung am Status, da MSB = 1, bei den folgenden Bytes sollte das nicht so sein
+
+2 Zweites Byte enthält Daten und beginner immer mit einer 0 als MSB (Wertebereich von 0-127)
+
+3 Zweites Byte enthält Daten und beginner immer mit einer 0 als MSB (Wertebereich von 0-127)
+
+
+Mögliche Empfangsfälle:
+======================
+1. Alle drei Bytes in richtiger Reihenfolge und korrekt empfangen 	-> Licht ändern
+2. Nur ein Byte oder zwei Bytes empfangen (welche davon ist egal)	-> Erkennung über Timeout
+3. Ungültiges oder nicht releventes Byte empfangen					-> Erkennung beim Parsen
+
+
+Timout Funktion:
+===============
+Wenn die Anzahl der empfangenen Byte Eins oder Zwei beträgt, soll nebenbei ein Zähler
+laufen. Erreicht dieser Zähler einen bestimmten Wert, sind die bereits emfangenen Daten
+zu verwerfen und es wird auch ein komplett neues MIDI-Kommando gewartet. Trifft ein 
+weiteres Byte vor Ablauf des Zählers ein, wird der Zähler gestoppt oder neu gestartet.
+
+
+Parsen:
+======
+Wird ein Byte empfangen, wird dieses direkt geparst und ein entsprechender Parse-Zustand
+gesetzt. Wurde noch kein Byte empfangen, ist der Parse-Zustand "WAITING".
+
+Erstes Byte:
+	Aufteilung nach Status und MIDI Channel Number, jedes Segment separat vergleichen.
+	Für die Vergleiche müssen über Defines Vergleichwerte vorgegeben werden, die ggf. 
+	bei weiteren Tests schnell geändert werden können.
+	Stimmen die beiden Segmente mit den Vergleichswerten überein, wird der Parse-Zustand
+	auf "STATUS_AND_CHANNEL_RECEIVED" gesetzt. Anderfalls ändert sich der Zustand nicht.
+	
+Zweites Byte:
+	Mit diesem Byte wird die Farbe definiert. Für Rot, Grün und Blau muss es somit
+	ebenfalls jeweils eine Vergleichsnote (ebenfalls über Defines) geben. Stimmt einer
+	der Vergleiche überein, wird sich die Farbe gemerkt und der Parse-Zustand auf
+	"NOTE_RECEIVED" gesetzt. Stimmt kein Vergleich überein, wird der Parse-Zustand auf
+	"WAITING" zurückgesetzt.
+	
+Drittes Byte:
+	Gibt die Leuchtstärke an. Zu überprüfen gilt, ob das Byte eine '0' im MSB enthält.
+	Wenn ja, ist das Byte gültig und die Leuchtstärke kann für die Frabe entsprechend
+	übernommen werden. Ggf. kann der Leuchtwert um eine Stelle nach Links geschoben
+	werden.	Anschließend wird eine Aktualisierung des Lichtschlauch vorgemerkt. Der
+	Parse-Zustand wird zurückgesetzt auf "WAITING". Sind weitere Daten im Empfangsbuffer
+	vorhanden, werden diese zunächst geparst.
+	
+
+Zahlen und Zeiten:
+=================
+Dauer eines Bits bei Baudrate von 31250: 32µs
+Dauer über Übertragung eines Bytes: 	320µs (10 Bit notwending)
+Dauer Empfang von drei Bytes:			960µs
+
+Senden eines Bits per SPI mit 4 MHz:	0.25µs
+Senden einer RGB-LED (24 Bits):			  6µs
+Senden eines Schlauchs mit 50 LEDs:		300µs
+
+
+Konfigurierbare Parameter:
+=========================
+MIDI Channel:			0-15	(1 Byte)
+MIDI Note Red:			0-127	(1 Byte)
+MIDI Note Green:		0-127	(1 Byte)
+MIDI Note Blue:			0-127	(1 Byte)
+MIDI Note Off Skip:		0-1		(1 Byte)
+
+No Data Light Red:		0-255	(1 Byte)
+No Data Light Green:	0-255	(1 Byte)
+No Data Light Blue:		0-255	(1 Byte)
+No Data Light Timeout:	1-255	(1 Byte) // in 200 ms Schritten
+
+Permanent Light Red:	0-255	(1 Byte)
+Permanent Light Green:	0-255	(1 Byte)
+Permanent Light Blue:	0-255	(1 Byte)
+
+
+Midi Notes:
+==========
+Octave		Note		Value (Hex)			
+-1			C 			0x00				C-1 
+-1			C#			0x01				C#-1
+-1			D 			0x02				D-1 
+-1			Eb			0x03				Eb-1
+-1			E 			0x04				E-1 
+-1			F 			0x05				F-1 
+-1			F#			0x06				F#-1
+-1			G 			0x07				G-1 
+-1			G#			0x08				G#-1
+-1			A 			0x09				A-1 
+-1			Bb			0x0A				Bb-1
+-1			B 			0x0B				B-1
+0			C 			0x0C				C0 
+0			C# 			0x0D				C#0
+0			D 			0x0E				D0 
+0			Eb 			0x0F				Eb0
+0			E 			0x10				E0 
+0			F 			0x11				F0 
+0			F# 			0x12				F#0
+0			G 			0x13				G0 
+0			G# 			0x14				G#0
+0			A 			0x15				A0 
+0			Bb 			0x16				Bb0
+0			B 			0x17				B0 
+1			C 			0x18				C1 
+1			C# 			0x19				C#1
+1			D 			0x1A				D1 
+1			Eb 			0x1B				Eb1
+1			E 			0x1C				E1 
+1			F 			0x1D				F1 
+1			F# 			0x1E				F#1
+1			G 			0x1F				G1 
+1			G# 			0x20				G#1
+1			A 			0x21				A1 
+1			Bb 			0x22				Bb1
+1			B 			0x23				B1 
+2			C 			0x24				C2 
+2			C# 			0x25				C#2
+2			D 			0x26				D2 
+2			Eb 			0x27				Eb2
+2			E 			0x28				E2 
+2			F 			0x29				F2 
+2			F# 			0x2A				F#2
+2			G 			0x2B				G2 
+2			G# 			0x2C				G#2
+2			A 			0x2D				A2 
+2			Bb 			0x2E				Bb2
+2			B 			0x2F				B2 
+3			C 			0x30				C3 
+3			C# 			0x31				C#3
+3			D 			0x32				D3 
+3			Eb 			0x33				Eb3
+3			E 			0x34				E3 
+3			F 			0x35				F3 
+3			F# 			0x36				F#3
+3			G 			0x37				G3 
+3			G# 			0x38				G#3
+3			A 			0x39				A3 
+3			Bb 			0x3A				Bb3
+3			B 			0x3B				B3 
+4			C 			0x3C				C4 
+4			C# 			0x3D				C#4
+4			D 			0x3E				D4 
+4			Eb 			0x3F				Eb4
+4			E 			0x40				E4 
+4			F 			0x41				F4 
+4			F# 			0x42				F#4
+4			G 			0x43				G4 
+4			G# 			0x44				G#4
+4			A 			0x45				A4 
+4			Bb 			0x46				Bb4
+4			B 			0x47				B4 
+5			C 			0x48				C5 
+5			C# 			0x49				C#5
+5			D 			0x4A				D5 
+5			Eb 			0x4B				Eb5
+5			E 			0x4C				E5 
+5			F 			0x4D				F5 
+5			F# 			0x4E				F#5
+5			G 			0x4F				G5 
+5			G# 			0x50				G#5
+5			A 			0x51				A5 
+5			Bb 			0x52				Bb5
+5			B 			0x53				B5 
+6			C 			0x54				C6 
+6			C# 			0x55				C#6
+6			D 			0x56				D6 
+6			Eb 			0x57				Eb6
+6			E 			0x58				E6 
+6			F 			0x59				F6 
+6			F# 			0x5A				F#6
+6			G 			0x5B				G6 
+6			G# 			0x5C				G#6
+6			A 			0x5D				A6 
+6			Bb 			0x5E				Bb6
+6			B 			0x5F				B6 
+7			C 			0x60				C7
+7			C# 			0x61				C#7
+7			D 			0x62				D7 
+7			Eb 			0x63				Eb7
+7			E 			0x64				E7 
+7			F 			0x65				F7 
+7			F# 			0x66				F#7
+7			G 			0x67				G7 
+7			G# 			0x68				G#7
+7			A 			0x69				A7 
+7			Bb 			0x6A				Bb7
+7			B 			0x6B				B7 
+8			C 			0x6C				C8 
+8			C# 			0x6D				C#8
+8			D 			0x6E				D8 
+8			Eb 			0x6F				Eb8
+8			E 			0x70				E8 
+8			F 			0x71				F8 
+8			F# 			0x72				F#8
+8			G 			0x73				G8 
+8			G# 			0x74				G#8
+8			A 			0x75				A8 
+8			Bb 			0x76				Bb8
+8			B 			0x77				B8 

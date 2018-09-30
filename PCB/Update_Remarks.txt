@@ -1,0 +1,18 @@
+Remarks for MIDI_Lighter_12V_Only:
+
+================================================================
+Versions: v1.0 -> v1.1
+
+[x] Milling Layer has not been exported to Gerber files -> Order directly with EAGLE files
+	-> Will order from OSH-Park
+[x] Wrong Package for IC7 AB8217 -> Change to MSOP-8
+	-> Library and component in schematic updated
+[x] Move Pin-Header up a bit -> Recommended 1mm at least
+	-> Moved
+[x] Change position of X6 (User Switch) -> Maybe above the USB-Plug
+	-> Moved
+[x] Verify external resonator layout -> Consider to replace with Quartz-Oscillator
+	-> It should work (not tested, but I'm optimistic)
+[x] Add more 100nF capacitors to VCC Pins
+	-> Added
+================================================================

@@ -1,0 +1,3 @@
+How to make text subscript in a System::String:
+==============================================
+https://social.msdn.microsoft.com/Forums/en-US/291c1434-ec00-427a-bd81-47b0252b1370/subscript-and-superscript-in-textblock?forum=silverlightnet

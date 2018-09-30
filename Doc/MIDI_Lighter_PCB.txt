@@ -1,0 +1,19 @@
+Fakten und feststehende Daten für die MIDI Lighter Schaltung und Layout:
+=======================================================================
+ 1: Versorgungsspannung für ATmega32u4 muss 5V betragen -> anderenfalls keine 16 MHz möglich (ATmega32u4 Datasheet Seite 386)
+ 2: Typische Versorgungsspannungen für LED-Schläuche sind 5V und 12V, beide Schlauch-Arten sollten grundlegend unterstützt werden
+ 3: Abhängig von LED-Schlauch-Typ muss die Ansteuerung über PWM (ATmega32u4 Timer 4 (High-Speed)) oder serielle Daten (SPI) stattfinden
+ 4: Wenn ein 12V-LED-Schlauch verwendet wird, muss ein Spannungswandler auf 5V für den ATmega32u4 verwendet werden
+ 5: Wenn ein 5V-LED-Schlauch verwendet wird, kann der Spannungswandler nicht eingesetzt werden, dann eine gewisse Mindestspannung von >5V verfügbar sein muss
+ 6: Eine Spannung von 3,3V kann aus den Versorgungsspannungen 12V und 5V immer gewandelt werden -> Idee dazu:
+	6a: Separaten ATtiny13 (8 Pin SOIC) mit 3,3V versorgen und die Versorungsspannung über Spannungsteiler messen lassen
+	6b: Abhängig von der gemessenen Versorgungsspannung, mittels P-MOS-Transistoren die Versorgungsspannung für den ATmega32u4 einschalten
+	6c: Dabei kann der 5V-Spannungswandler umgangen werden, je nachdem welche Versorungsspannung angeschlossen ist
+	6d: === Achtung === Wird die Platine mit 12V versorgt, ist für den ATmega32u4 alles gut, ein evtl. angeschlossener 5V-LED-Schlauch könnte dies nicht überleben === Achtung ===
+	6e: Verwendeter LED-Schlauch muss konfiguriert werden, abhängig von der Konfiguration kann die Versorgungsspannung für den LED-Schlauch über ATmega32u4 aktiviert werden
+
+
+Ideen und Gedanken zu dem MIDI Lighter PCB-Layout:
+=================================================
+ 1: Auf jeden Fall beidseitig Bauteile platzieren und bestücken
+ 2: Mittels eines 3D-Druckers angepasste Boden- und Deckelplatte mit transparentem Filament drucken

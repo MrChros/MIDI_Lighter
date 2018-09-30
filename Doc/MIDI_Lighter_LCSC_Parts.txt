@@ -1,0 +1,44 @@
+Microchip Tech ATMEGA32U4-AU: C44854
+Microchip Tech ATTINY13A-SU: C9805
+
+IRLML0040: 			C67273
+IRLML2246: 			C127272
+
+H11L1M: 			C16587
+H11L1M Socket:		C29531
+SN74LS: 			C7653
+Alterna. SN74AHC:	C7486 (2x pro Platine)
+LM1117: 			C9663
+MCP1703:			C144342
+Quarz:				C111377
+
+Capacitor Tantal: 	C8015 (Check footprint and ESR value)
+Capacitor 100n:		C85866
+Capacitor 1u:		C28323
+
+USB MICRO-B Buchse: C132562
+
+LED Y: 				C2296
+LED R: 				C2295
+LED G: 				C2297
+LED W: 				C34499
+LED B: 				C2293
+
+Säulen bottom:		C12373
+Säulen top:			C55707
+Schrauben 6mm:		C194617
+Schrauben 8mm:		C194618
+
+
+Tantal Capacitors:
+=================
+Reichelt: TPSB106K020R0500
+Size			: B 	= 1210
+Capacity		: 106 	= 10uF
+Tolerance		: K		= 10%
+Rated DC Voltage: 020	= 20 Vdc
+Packaging		: R		= Pure Tin 7" Reel
+ESR in mOhm		: 0500	= 0.5 Ohm
+
+
+DIN Buchse (Conrad): https://www.conrad.de/de/din-rundsteckverbinder-buchse-einbau-horizontal-polzahl-5-schwarz-hirschmann-mab-5sh-1-st-738247.html

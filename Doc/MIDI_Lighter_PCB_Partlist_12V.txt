@@ -1,0 +1,73 @@
+Partlist
+
+Exported from MIDI_Lighter_12V_Only.sch at 10/07/2018 18:21
+
+EAGLE Version 7.6.0 Copyright (c) 1988-2016 CadSoft
+
+Assembly variant: 
+
+Part     Value                 Device                  Package               Library    Sheet
+
+C1       22p                   C-EUC0805               C0805                 resistor   2
+C2       22p                   C-EUC0805               C0805                 resistor   2
+C3       1u                    C-EUC0805               C0805                 resistor   2
+C4       1u                    C-EUC0805               C0805                 resistor   2
+C5       10u_T                 C-EUC1210               C1210                 resistor   1
+C6       10u_T                 C-EUC1210               C1210                 resistor   1
+C7       100n                  C-EUC0805               C0805                 resistor   3
+C8       100n                  C-EUC0805               C0805                 resistor   2
+C12      100n                  C-EUC0805               C0805                 resistor   3
+D1       1N 4001 SMD           DIODE-MINIMELF          MINIMELF              diode      1
+D2       1N 914                DIODE-DO35-10           DO35-10               diode      3
+D3       BAT54                 BAT54                   SOT23                 diode      3
+IC1      ATMEGA32U4            ATMEGA32U4              TQFP44                ChrosLib   2
+IC2      H11L1M                H11L1M                  DIL06                 ChrosLib   3
+IC3      LM 1117 MPX-5.0       REG1117                 SOT223                burr-brown 1
+IC4      74LS14D               74LS14D                 SO14                  74xx-eu    3
+IC7      AD8217                AD8217                  SO08                  ChrosLib   4
+JP2                            PINHD-1X11              1X11                  pinhead    2
+LED1                           LEDCHIP-LED0805         CHIP-LED0805          led        2
+LED2                           LEDCHIP-LED0805         CHIP-LED0805          led        2
+LED3                           LEDCHIP-LED0805         CHIP-LED0805          led        2
+LED4                           LEDCHIP-LED0805         CHIP-LED0805          led        2
+LED7                           LEDCHIP-LED0805         CHIP-LED0805          led        4
+Q1       CSM-7X-DU             CSM-7X-DU               CSM-7X-DU             crystal    2
+R1       220                   R-EU_R0805              R0805                 resistor   3
+R2       1k                    R-EU_R0805              R0805                 resistor   3
+R3       10k                   R-EU_R0805              R0805                 resistor   2
+R4       22                    R-EU_R0805              R0805                 resistor   2
+R5       22                    R-EU_R0805              R0805                 resistor   2
+R6       1k                    R-EU_R0805              R0805                 resistor   2
+R7       220                   R-EU_R0805              R0805                 resistor   3
+R8       220                   R-EU_R0805              R0805                 resistor   3
+R9       500                   R-EU_R0805              R0805                 resistor   2
+R10      500                   R-EU_R0805              R0805                 resistor   2
+R11      500                   R-EU_R0805              R0805                 resistor   2
+R12      500                   R-EU_R0805              R0805                 resistor   2
+R13      100                   R-EU_R0805              R0805                 resistor   4
+R14      100                   R-EU_R0805              R0805                 resistor   4
+R15      100                   R-EU_R0805              R0805                 resistor   4
+R19      100                   R-EU_R0805              R0805                 resistor   4
+R21      10k\                  R-EU_R0805              R0805                 resistor   4
+R29      2k                    R-EU_R0805              R0805                 resistor   4
+R32      10k                   R-EU_R0805              R0805                 resistor   4
+R33      10k                   R-EU_R0805              R0805                 resistor   4
+R34      10k                   R-EU_R0805              R0805                 resistor   4
+R35      10k                   R-EU_R0805              R0805                 resistor   4
+R36      0.05                  R-EU_R2512              R2512                 resistor   4
+R37      10k                   R-EU_R0805              R0805                 resistor   3
+R38      10k                   R-EU_R0805              R0805                 resistor   3
+T1       IRLML6346             IRLML6346               SOT23                 ChrosLib   4
+T2       IRLML6346             IRLML6346               SOT23                 ChrosLib   4
+T3       IRLML6346             IRLML6346               SOT23                 ChrosLib   4
+T6       IRF7416               IRF7416                 SO08                  ChrosLib   4
+T9       IRLML6346             IRLML6346               SOT23                 ChrosLib   4
+T10                            BC847CLT1-NPN-SOT23-BEC SOT23-BEC             transistor 3
+T11                            BC847CLT1-NPN-SOT23-BEC SOT23-BEC             transistor 3
+X1       MIDI_IN               DIN_PLUG_5_PINS         DIN_PLUG_5_PINS       ChrosLib   3
+X2       MIDI_THRU             DIN_PLUG_5_PINS         DIN_PLUG_5_PINS       ChrosLib   3
+X3       USB_MICRO_BUCHSE_LCSC USB_MICRO_BUCHSE_LCSC   USB_MICRO_BUCHSE_LCSC ChrosLib   2
+X4                             733980-62               733980-62             con-conrad 1
+X5       2.5MM_SMD_PUSHBUTTON  2.5MM_SMD_PUSHBUTTON    2.5MM_SMD_PUSHBUTTON  ChrosLib   2
+X6       2.5MM_SMD_PUSHBUTTON  2.5MM_SMD_PUSHBUTTON    2.5MM_SMD_PUSHBUTTON  ChrosLib   2
+X7       LED_STRIP_4PIN        LED_STRIP_4PIN          LED_STRIP_4PIN        ChrosLib   4

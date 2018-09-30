@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\USB">
+      <UniqueIdentifier>{d92ca039-c49a-4279-8b11-b6d2716e3fa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{6640c636-8854-45cc-aa76-f12ff7b426d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MIDI_Lighter">
+      <UniqueIdentifier>{c81972dd-ccb6-420a-abb7-afec5d0b186f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{ab35f505-3595-4bbd-99ed-2009db06ee10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Icon">
+      <UniqueIdentifier>{3cfc1c72-d315-47fe-9098-4b2e0cc213bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Test">
+      <UniqueIdentifier>{3ffb66c6-8faa-4980-afa8-49d1ff262ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Device Panel">
+      <UniqueIdentifier>{a8a086f9-4077-4b39-b02c-da4a06ac0df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Main Panel">
+      <UniqueIdentifier>{4a394a37-9b60-4906-985c-9dc9daf66083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Device Panel\Components">
+      <UniqueIdentifier>{a7b4a2b4-6ccf-426f-a232-db14b2b37c27}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="USB_Device.h">
+      <Filter>Source Files\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="USB_Link.h">
+      <Filter>Source Files\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUSB_Handler.h">
+      <Filter>Source Files\USB</Filter>
+    </ClInclude>
+    <ClInclude Include="MIDI_Lighter.h">
+      <Filter>Source Files\MIDI_Lighter</Filter>
+    </ClInclude>
+    <ClInclude Include="MIDI_Lighter_GUI.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MIDI_Lighter_CLI_Wrapper.h">
+      <Filter>Source Files\MIDI_Lighter</Filter>
+    </ClInclude>
+    <ClInclude Include="LogProgress.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Source Files\GUI\Device Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Device_List.h">
+      <Filter>Source Files\GUI\Main Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Device_Edit.h">
+      <Filter>Source Files\GUI\Main Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Source Files\GUI\Device Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration_MIDI.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration_No_Data_Light.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration_Permanent_Light.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Connection.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Device_Name.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Status_Bar.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration_RGB_Order.h">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="USB_Link.cpp">
+      <Filter>Source Files\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUSB_Handler.cpp">
+      <Filter>Source Files\USB</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDI_Lighter.cpp">
+      <Filter>Source Files\MIDI_Lighter</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDI_Lighter_GUI.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDI_Lighter_CLI_Wrapper.cpp">
+      <Filter>Source Files\MIDI_Lighter</Filter>
+    </ClCompile>
+    <ClCompile Include="LogProgress.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Source Files\GUI\Device Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Device_List.cpp">
+      <Filter>Source Files\GUI\Main Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Device_Edit.cpp">
+      <Filter>Source Files\GUI\Main Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Source Files\GUI\Device Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration_MIDI.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration_No_Data_Light.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration_Permanent_Light.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Connection.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Device_Name.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Status_Bar.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration_RGB_Order.cpp">
+      <Filter>Source Files\GUI\Device Panel\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MIDI_Lighter.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\connect.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\arrow_refresh.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\cross.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\disconnect.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\help.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\palette.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+    <Image Include="Icon\tick.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
