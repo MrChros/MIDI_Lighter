@@ -258,12 +258,18 @@ System::Void MIDI_Lighter::Device_List::Update_Device(MIDI_Lighter_Wrapper::Devi
 			Sync_Status_Update(SYNC_STATUS::FAILED);
 		}
 
-		// Update name in list here...
+		System::Windows::Forms::DataGridViewRow^ Selected_Row = nullptr;
 
-//		int Index = _ComboBox_Devices->SelectedIndex;
-//		_ComboBox_Devices->Items->Remove(_ComboBox_Devices->SelectedItem);
-//		_ComboBox_Devices->Items->Insert(Index, Index.ToString() + ": " + device->Name);
-//		_ComboBox_Devices->SelectedIndex = Index;
+		System::Windows::Forms::DataGridViewSelectedRowCollection^ Rows = _DataGrid_Devices->SelectedRows;
+		for each(System::Windows::Forms::DataGridViewRow^ Row in Rows)
+		{
+			Selected_Row = Row;
+		}
+
+		if (Selected_Row != nullptr)
+		{
+			Selected_Row->SetValues(gcnew cli::array< System::String^ >(2) { (Selected_Row->Index + 1).ToString(), device->Name });
+		}
 
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
