@@ -8,6 +8,7 @@
 // ============================================================================================
 #include "Commands.h"
 
+#include "ADC.h"
 #include "USB.h"
 #include "Help.h"
 #include "EEPROM.h"
@@ -49,6 +50,9 @@
 #define COMMAND_RGB_ORDER_GET_LENGTH		 1
 #define COMMAND_RGB_ORDER_SET				'E'
 #define COMMAND_RGB_ORDER_SET_LENGTH		 2
+
+#define COMMAND_ADC_GET						'f'
+#define COMMAND_ADC_GET_LENGTH				 1
 
 
 #define COMMAND_READ_EEPROM					'y'
@@ -157,6 +161,17 @@ void Command_Parse_Command(void)
 			if(_Commands_Buffer.Count != COMMAND_RGB_ORDER_SET_LENGTH) { break; }
 			Configuration_Set_RGB_Order(CharArray_To_Number(&_Commands_Buffer.Data[1], 1));
 			break;
+
+		case COMMAND_ADC_GET:
+			if(_Commands_Buffer.Count != COMMAND_ADC_GET_LENGTH) { break; }
+			Send_Success = USB_Send_Int_Hex(ADC_Get_Value(), 3, FALSE);	if(Send_Success==FALSE) { break; }
+			Send_Success = USB_Send_Char(COMMAND_TERMINATOR);
+			break;
+
+		
+
+
+
 
 		case COMMAND_WRITE_EEPROM:
 			if(_Commands_Buffer.Count != COMMAND_WRITE_EEPROM_LENGTH) { break; }

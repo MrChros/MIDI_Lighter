@@ -5,24 +5,35 @@
 
 namespace MIDI_Lighter
 {
-	public ref class Debug : System::Object
+	public ref class Debug : System::Windows::Forms::UserControl
 	{
 	public:
-		Debug(LogProgress::LogProgress^ logprogress, MIDI_Lighter::Device_List^ device_list);
+		Debug(MIDI_Lighter::Device_List^ device_list);
 
-		System::ComponentModel::BackgroundWorker^ Background_Worker_Read_EEPROM();
-	
 	protected:
 		~Debug() { }
 
 	private:
-		LogProgress::LogProgress^	_LogProgress;
-		MIDI_Lighter::Device_List^	_Device_List;
+		LogProgress::LogProgress^		_LogProgress;
+		MIDI_Lighter::Device_List^		_Device_List;
 
-		System::ComponentModel::BackgroundWorker^ _Background_Worker_Read_EEPROM;
+		System::Windows::Forms::Button^	_Button_Read_ADC;
+		System::Windows::Forms::Timer^	_Timer_Read_ADC;
+		System::UInt32					_Read_ADC_Counter;
 
-		System::Void Background_Worker_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e);
-		System::Void Background_Worker_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
-		System::Void Background_Worker_Read_EEPROM(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
+
+		System::Void Button_Read_EEPROM_Click	(System::Object^ sender, System::EventArgs^ e);
+		System::Void Button_Read_ADC_Click		(System::Object^ sender, System::EventArgs^ e);
+		System::Void Timer_Read_ADC_Tick		(System::Object^ sender, System::EventArgs^ e);
+
+
+
+		/////////////////////////////////
+		// Debug_Background_EEPROM.cpp //
+		/////////////////////////////////
+		System::ComponentModel::BackgroundWorker^			_Background_Worker_Read_EEPROM;
+		System::Void Background_Worker_ProgressChanged		(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e);
+		System::Void Background_Worker_RunWorkerCompleted	(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
+		System::Void Background_Worker_Read_EEPROM			(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
 	};
 }

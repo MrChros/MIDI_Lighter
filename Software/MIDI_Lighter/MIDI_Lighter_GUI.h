@@ -22,6 +22,7 @@ namespace MIDI_Lighter_GUI
 		
 		MIDI_Lighter::Device_List^					_Device_List;
 		MIDI_Lighter::Device^						_Device;
+		MIDI_Lighter::Debug^						_Debug;
 		MIDI_Lighter::Status_Bar^					_Status_Bar;
 
 		System::Void Split_Container_SplitterMoved	(System::Object^ sender, System::Windows::Forms::SplitterEventArgs^ e);

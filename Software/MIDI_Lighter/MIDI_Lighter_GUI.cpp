@@ -13,22 +13,23 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 
 	
 		System::Windows::Forms::TableLayoutPanel^ Table_Layout_Edit = gcnew System::Windows::Forms::TableLayoutPanel();
-		Table_Layout_Edit->RowCount = 3;
-		Table_Layout_Edit->ColumnCount = 1;
-		Table_Layout_Edit->Dock = System::Windows::Forms::DockStyle::Fill;
-		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 255)));		// 0
+		Table_Layout_Edit->RowCount		= 3;
+		Table_Layout_Edit->ColumnCount	= 1;
+		Table_Layout_Edit->Dock			= System::Windows::Forms::DockStyle::Fill;
+		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 260)));		// 0
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent,  100)));		// 1
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  30)));		// 2
 		Table_Layout_Edit->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 50)));	// 0
 
-			_Device = gcnew MIDI_Lighter::Device(_Device_List);
-			_Device->Dock = System::Windows::Forms::DockStyle::Fill;
+			_Device					= gcnew MIDI_Lighter::Device();
+			_Device->Dock			= System::Windows::Forms::DockStyle::Fill;
+			_Device->BorderStyle	= System::Windows::Forms::BorderStyle::Fixed3D;
 		Table_Layout_Edit->Controls->Add(_Device, 0, 0);
 
-			System::Windows::Forms::TextBox^ TextBox_Debug = gcnew System::Windows::Forms::TextBox();
-			TextBox_Debug->Dock = System::Windows::Forms::DockStyle::Fill;
-			TextBox_Debug->Multiline = true;
-		Table_Layout_Edit->Controls->Add(TextBox_Debug, 0, 1);
+			_Debug					= gcnew MIDI_Lighter::Debug(_Device_List);
+			_Debug->Dock			= System::Windows::Forms::DockStyle::Fill;
+			_Debug->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
+		Table_Layout_Edit->Controls->Add(_Debug, 0, 1);
 
 			_Status_Bar = gcnew MIDI_Lighter::Status_Bar();
 		Table_Layout_Edit->Controls->Add(_Status_Bar, 0, 2);

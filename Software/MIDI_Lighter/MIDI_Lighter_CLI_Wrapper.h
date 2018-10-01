@@ -256,6 +256,8 @@ public:
 	MIDI_Lighter_Wrapper::Configuration_RGB_Order^			Get_Configuration_RGB_Order(System::Boolean^ read_success);
 	System::Boolean											Set_Configuration_RGB_Order(MIDI_Lighter_Wrapper::Configuration_RGB_Order^ rgb_order);
 
+	System::UInt16											Get_ADC(System::Boolean^ read_success);
+
 	System::Byte											Read_EEPROM(System::UInt32 address, System::Boolean^ read_success);
 	System::Boolean											Write_EEPROM();
 

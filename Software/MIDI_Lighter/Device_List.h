@@ -37,8 +37,13 @@ namespace MIDI_Lighter
 		System::Void Update_Device							(MIDI_Lighter_Wrapper::Device^							device);
 		System::Void Update_Configuration_RGB_Order			(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
 
-		System::Byte Read_EEPROM(uint32_t address);
 		System::Void Update_EEPROM();
+
+		/////////////////////
+		// Debug Functions //
+		/////////////////////
+		System::Byte	Read_EEPROM(uint32_t address);
+		System::Int16	Read_ADC();
 
 	protected:
 		~Device_List() { };

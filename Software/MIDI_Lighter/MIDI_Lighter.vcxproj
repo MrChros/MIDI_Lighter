@@ -94,7 +94,7 @@
       <AdditionalDependencies>.\WinUSB_Lib\setupapi.lib;.\WinUSB_Lib\winusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\WinUSB_Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>Main</EntryPointSymbol>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -119,7 +119,7 @@
       <AdditionalDependencies>.\WinUSB_Lib\setupapi.lib;.\WinUSB_Lib\winusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\WinUSB_Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>Main</EntryPointSymbol>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,6 +160,7 @@
     <ClCompile Include="Configuration_Permanent_Light.cpp" />
     <ClCompile Include="Configuration_RGB_Order.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Debug_Background_EEPROM.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Device_Name.cpp" />
     <ClCompile Include="Device_List.cpp" />

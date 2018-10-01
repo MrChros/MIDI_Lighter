@@ -21,7 +21,7 @@ namespace MIDI_Lighter
 	public ref class Device : public System::Windows::Forms::UserControl
 	{
 	public:
-		Device(MIDI_Lighter::Device_List^ device_list);
+		Device();
 
 		event Changed_Configuration_MIDI^					Changed_Configuration_MIDI;
 		event Changed_Configuration_No_Data_Light^			Changed_Configuration_No_Data_Light;
@@ -52,9 +52,6 @@ namespace MIDI_Lighter
 
 		System::Windows::Forms::Button^						_Button_Write_EEPROM;
 
-		MIDI_Lighter::Debug^								_Debug;
-		LogProgress::LogProgress^							_LogProgress;
-
 		System::Boolean										_EEPROM_Write_Pending;
 
 		System::Void Update_Configuration_MIDI				(MIDI_Lighter_Wrapper::Configuration_MIDI^				configuration_midi);
@@ -64,6 +61,5 @@ namespace MIDI_Lighter
 		System::Void Update_Configuration_RGB_Order			(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
 
 		System::Void Button_Save_EEPROM_Click				(System::Object^ sender, System::EventArgs^ e);
-		System::Void Button_Read_EEPROM_Click				(System::Object^ sender, System::EventArgs^ e);
 	};
 }

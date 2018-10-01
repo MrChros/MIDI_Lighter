@@ -90,7 +90,7 @@ int main (void)
 	///////////////////////////
 	// Module Initialization //
 	///////////////////////////
-//	ADC_Init(); // Not in use yet...
+	ADC_Init();
 	Configuration_Init();
 	Timer_And_Button_Init();
 	UART_Init();

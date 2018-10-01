@@ -192,6 +192,22 @@ System::Boolean	MIDI_Lighter_Wrapper::Set_Configuration_RGB_Order(MIDI_Lighter_W
 	return _MIDI_Lighter->Set_Configuration_RGB_Order(Configuration_RGB_Order);
 }
 
+System::UInt16 MIDI_Lighter_Wrapper::Get_ADC(System::Boolean^ read_success)
+{
+	bool Success;
+
+	System::UInt16 Return_Value = _MIDI_Lighter->Get_ADC(&Success);
+
+	if (!Success)
+	{
+		std::cout << "ADC read failed" << std::endl;
+	}
+
+	read_success = Success;
+
+	return Return_Value;
+}
+
 System::Byte MIDI_Lighter_Wrapper::Read_EEPROM(System::UInt32 address, System::Boolean^ read_success)
 {
 	bool Success;

@@ -292,16 +292,6 @@ System::Void MIDI_Lighter::Device_List::Update_Configuration_RGB_Order(MIDI_Ligh
 	}
 }
 
-System::Byte MIDI_Lighter::Device_List::Read_EEPROM(uint32_t address)
-{
-	if (_MIDI_Lighter->IsConnected())
-	{
-		System::Boolean^ Success = gcnew System::Boolean;
-		return _MIDI_Lighter->Read_EEPROM(address, Success);
-	}
-	return 0;
-}
-
 System::Void MIDI_Lighter::Device_List::Update_EEPROM()
 {
 	if (_MIDI_Lighter->IsConnected())
@@ -310,4 +300,26 @@ System::Void MIDI_Lighter::Device_List::Update_EEPROM()
 
 		Configuration_Changed(false);
 	}
+}
+
+System::Byte MIDI_Lighter::Device_List::Read_EEPROM(uint32_t address)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		System::Boolean^ Success = gcnew System::Boolean;
+		return _MIDI_Lighter->Read_EEPROM(address, Success);
+	}
+
+	return 0;
+}
+
+System::Int16 MIDI_Lighter::Device_List::Read_ADC()
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		System::Boolean^ Success = gcnew System::Boolean;
+		return _MIDI_Lighter->Get_ADC(Success);
+	}
+
+	return -1;
 }

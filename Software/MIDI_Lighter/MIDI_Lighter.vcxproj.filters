@@ -152,6 +152,9 @@
     <ClCompile Include="Configuration_RGB_Order.cpp">
       <Filter>Source Files\GUI\Device Panel\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Debug_Background_EEPROM.cpp">
+      <Filter>Source Files\GUI\Device Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MIDI_Lighter.resx">

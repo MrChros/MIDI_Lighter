@@ -31,6 +31,8 @@ namespace HAL
 			Set_RGB_Order		= 'E',
 			Get_RGB_Order		= 'e',
 
+			Get_ADC				= 'f',
+
 			Write_EEPROM		= 'Y',
 			Read_EEPROM			= 'y'
 		};
@@ -288,6 +290,8 @@ namespace HAL
 
 		HAL::MIDI_Lighter::Configuration_RGB_Order			Get_Configuration_RGB_Order(bool* read_success);
 		bool												Set_Configuration_RGB_Order(HAL::MIDI_Lighter::Configuration_RGB_Order rgb_order);
+
+		uint16_t											Get_ADC(bool* read_success);
 
 		uint8_t												Read_EEPROM(uint32_t address, bool* read_success);
 		bool												Write_EEPROM();

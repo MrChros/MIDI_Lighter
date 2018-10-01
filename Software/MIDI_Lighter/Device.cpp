@@ -1,6 +1,6 @@
 #include "Device.h"
 
-MIDI_Lighter::Device::Device(MIDI_Lighter::Device_List^ device_list)
+MIDI_Lighter::Device::Device()
 {
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
@@ -45,27 +45,18 @@ MIDI_Lighter::Device::Device(MIDI_Lighter::Device_List^ device_list)
 	_Configuration_RGB_Order->Update_Values				+= gcnew MIDI_Lighter::Update_Values_Configuration_RGB_Order		(this, &MIDI_Lighter::Device::Update_Configuration_RGB_Order);
 
 
-		System::Windows::Forms::Button^ Button_Read_EEPROM = gcnew System::Windows::Forms::Button();
-		Button_Read_EEPROM->Dock = System::Windows::Forms::DockStyle::Top;
-		Button_Read_EEPROM->Text = "Read EEPROM (Debug)";
-		Button_Read_EEPROM->UseVisualStyleBackColor = true;
-		Button_Read_EEPROM->Click += gcnew System::EventHandler(this, &Device::Button_Read_EEPROM_Click);
-	Table_Layout_Main->Controls->Add(Button_Read_EEPROM, 0, 5);
-
 		_Button_Write_EEPROM							= gcnew System::Windows::Forms::Button();
 		_Button_Write_EEPROM->Dock						= System::Windows::Forms::DockStyle::Top;
 		_Button_Write_EEPROM->Text						= "Save Configuration to EEPROM";
 		_Button_Write_EEPROM->UseVisualStyleBackColor	= true;
 		_Button_Write_EEPROM->Enabled					= false;
 		_Button_Write_EEPROM->Click					   += gcnew System::EventHandler(this, &MIDI_Lighter::Device::Button_Save_EEPROM_Click);
-	Table_Layout_Main->Controls->Add(_Button_Write_EEPROM, 1, 5);
+	Table_Layout_Main->Controls->Add(_Button_Write_EEPROM, 0, 5);
+	Table_Layout_Main->SetColumnSpan(_Button_Write_EEPROM, 2);
 
 	this->Controls->Add(Table_Layout_Main);
 
 	_EEPROM_Write_Pending = false;
-
-	_LogProgress	= gcnew LogProgress::LogProgress();
-	_Debug			= gcnew MIDI_Lighter::Debug(_LogProgress, device_list);
 }
 
 ///////////////////////////////////////////////////
@@ -146,27 +137,4 @@ System::Void MIDI_Lighter::Device::Update_Configuration_RGB_Order(MIDI_Lighter_W
 System::Void MIDI_Lighter::Device::Button_Save_EEPROM_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	EEPROM_Save();
-}
-
-
-//////////////////////////////////////
-// Internal function to read EEPROM //
-//////////////////////////////////////
-System::Void MIDI_Lighter::Device::Button_Read_EEPROM_Click(System::Object^ sender, System::EventArgs^ e)
-{
-	System::Windows::Forms::SaveFileDialog^ SaveFileDialog_User_Page = gcnew System::Windows::Forms::SaveFileDialog();
-	SaveFileDialog_User_Page->Filter = "ASCII files (*.txt)|*.txt";
-	SaveFileDialog_User_Page->ShowDialog(this);
-
-	System::String^ Selected_File = SaveFileDialog_User_Page->FileName;
-	delete SaveFileDialog_User_Page;
-	if (Selected_File->Length == 0) { return; }
-
-	_LogProgress->Set_Title("Reading EEPROM...");
-	_LogProgress->Set_Progress_Maximum(0x3FF);
-	_LogProgress->Set_Progress_Value(0);
-	_LogProgress->Show(this);
-	_LogProgress->Location = System::Drawing::Point(this->Left + this->Width / 2 - _LogProgress->Width / 2, this->Top + this->Height / 2 - _LogProgress->Height / 2);
-
-	_Debug->Background_Worker_Read_EEPROM()->RunWorkerAsync(gcnew array<System::String^>(1) { Selected_File });
 }
