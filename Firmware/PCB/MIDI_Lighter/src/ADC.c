@@ -12,6 +12,7 @@
 #include "ADC.h"
 
 // ============================================================================================
+#define	TEST			2
 #define	CURRENT			1
 #define	TEMPERATURE		0
 
@@ -23,7 +24,8 @@ volatile uint16_t	_ADC_Value;
 *******************************************************************/
 ISR(ADC_vect)
 {
-	_ADC_Value =  0 | (ADCH << 8) | (ADCL << 0);
+	_ADC_Value  = ADCL;
+	_ADC_Value |= (((uint16_t)ADCH) << 8);
 }
 
 /*******************************************************************
@@ -32,10 +34,12 @@ ISR(ADC_vect)
 void ADC_Init(void)
 {
 	_ADC_Value = 0;
+
+	return;
 	
 	uint8_t Value_To_Measure = CURRENT;
 
-	DIDR0 =  (0b1		<< ADC6D);		// Digital Input Disable
+//	DIDR0 =  (0b1		<< ADC6D);		// Digital Input Disable
 
 	if(Value_To_Measure == CURRENT)
 	{
@@ -45,7 +49,17 @@ void ADC_Init(void)
 
 
 		ADCSRB = (0b0011	<< ADTS0) |	// Select Timer0 as Trigger for ADC Conversion => ADC Conversion every 5ms, 200 Measurements/s)
-				 (0b0		<< MUX5);	// Edit this line for not Temperature Sensor anymore
+				 (0b0		<< MUX5);	// Needs to be Zero for ADC6
+	}
+	else if(Value_To_Measure == TEST)
+	{
+		ADMUX =  (0b00		<< REFS0) |	// Voltage Reference Selection = AREF, Internal Vref turned off
+				 (0b0		<< ADLAR) | // Result bits will be right adjusted
+				 (0b000011	<< MUX0);	// Select ADC11 as input for the ADC MUX
+
+
+		ADCSRB = (0b0011	<< ADTS0) |	// Select Timer0 as Trigger for ADC Conversion => ADC Conversion every 5ms, 200 Measurements/s)
+				 (0b1		<< MUX5);	// Needs to be One for ADC11
 	}
 	else if(Value_To_Measure == TEMPERATURE)
 	{

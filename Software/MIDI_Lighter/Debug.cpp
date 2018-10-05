@@ -33,7 +33,7 @@ MIDI_Lighter::Debug::Debug(MIDI_Lighter::Device_List^ device_list)
 
 
 	_Timer_Read_ADC = gcnew System::Windows::Forms::Timer();
-	_Timer_Read_ADC->Interval = 500;
+	_Timer_Read_ADC->Interval = 100;
 	_Timer_Read_ADC->Tick += gcnew System::EventHandler(this, &Debug::Timer_Read_ADC_Tick);
 
 	_Read_ADC_Counter = 0;
@@ -96,7 +96,7 @@ System::Void MIDI_Lighter::Debug::Timer_Read_ADC_Tick(System::Object^ sender, Sy
 
 	if (ADC_Value >= 0)
 	{
-		System::Console::WriteLine("Received ADC Value: " + ADC_Value.ToString() + " (" + _Read_ADC_Counter++ + ")");
+		System::Console::WriteLine("Received ADC Value: " + ADC_Value.ToString("D4") + " = " + ((5000 * ADC_Value) / 1024).ToString("D4") + "mA (" + _Read_ADC_Counter++.ToString("D6") + ")");
 	}
 	else
 	{
