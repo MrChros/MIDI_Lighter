@@ -9,6 +9,7 @@
 #include <avr/io.h>
 
 #include "Pin.h"
+#include "SPI.h"
 #include "MIDI.h"
 #include "UART.h"
 #include "LED_Strip.h"
@@ -114,13 +115,13 @@ void MIDI_Init(void)
 	// Setting Debug Pins //
 	////////////////////////
 
-	DEBUG_SET_OUTPUT(DEBUG_DDR_SCL, DEBUG_PIN_SCL);	// Note On Event
-	DEBUG_SET_OUTPUT(DEBUG_DDR_SDA, DEBUG_PIN_SDA); // Note Off Event
-	DEBUG_SET_OUTPUT(DEBUG_DDR_PB4, DEBUG_PIN_PB4); // Note Off Event takes place
-
-	DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
-	DEBUG_OFF(DEBUG_PORT_SDA, DEBUG_PIN_SDA);
-	DEBUG_OFF(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
+//	DEBUG_SET_OUTPUT(DEBUG_DDR_SCL, DEBUG_PIN_SCL);	// Note On Event
+//	DEBUG_SET_OUTPUT(DEBUG_DDR_SDA, DEBUG_PIN_SDA); // Note Off Event
+//	DEBUG_SET_OUTPUT(DEBUG_DDR_PB4, DEBUG_PIN_PB4); // Note Off Event takes place
+//
+//	DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
+//	DEBUG_OFF(DEBUG_PORT_SDA, DEBUG_PIN_SDA);
+//	DEBUG_OFF(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
 }
 
 
@@ -261,7 +262,7 @@ void MIDI_Process(void)
 						_Note_Off_Pending[_Parsing.Color]	= FALSE;
 						_Note_Off_Counter[_Parsing.Color]	= 0;
 						
-						DEBUG_ON(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
+						SPI_CONST_STRING("N");
 					}
 					else if(_Parsing.Event == MIDI_COMPARE_NOTE_OFF)
 					{
@@ -270,7 +271,7 @@ void MIDI_Process(void)
 							_Note_Off_Pending[_Parsing.Color]	= TRUE;
 							_Note_Off_Counter[_Parsing.Color]	= NOTE_OFF_TIMEOUT;
 							
-							DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
+							SPI_CONST_STRING("F");
 						}
 						else
 						{
@@ -338,7 +339,7 @@ void MIDI_Process(void)
 				_Note_Off_Pending[i]	= FALSE;
 				_Update_LED_Strip		= TRUE;
 
-				DEBUG_TOGGLE(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
+				SPI_CONST_STRING("A");
 			}
 		}
 	}

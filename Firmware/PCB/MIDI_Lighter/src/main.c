@@ -9,6 +9,7 @@
 #include "ADC.h"
 #include "USB.h"
 #include "Pin.h"
+#include "SPI.h"
 #include "Help.h"
 #include "MIDI.h"
 #include "UART.h"
@@ -88,6 +89,8 @@ int main (void)
 	LED_Strip_Init();
 	MIDI_Init();
 	Commands_Init();
+
+//	SPI_Init();	// Needed only for Debug
 
 	USB_Init();
 	_delay_ms(250);
