@@ -60,6 +60,11 @@ namespace MIDI_Lighter
 		USB_CONNECTION										_Current_USB_Connection_Status;
 		System::Windows::Forms::Timer^						_Timer_Poll_Connection;
 
+		System::Windows::Forms::DataGridViewCellStyle^		_CellStyle_OK;
+		System::Windows::Forms::DataGridViewCellStyle^		_CellStyle_Pending;
+
+		System::Collections::Generic::List<System::Boolean>^	_List_Pending;
+
 		System::Void Button_Refresh_Click					(System::Object^ sender, System::EventArgs^ e);
 		System::Void DataGrid_Devices_OnSelectionChanged	(System::Object^ sender, System::EventArgs^ e);
 		System::Void Label_Number_Devices_Update			();
@@ -67,6 +72,9 @@ namespace MIDI_Lighter
 
 		System::Void GUI_USB_Connect_Update					();
 		System::Void GUI_USB_Disconnect_Update				();
+
+		System::Void EEPROM_Write_Set_Pending				(System::Boolean pending);
+		System::Void Status_Cell_Update						();
 	};
 }
 

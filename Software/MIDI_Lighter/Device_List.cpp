@@ -48,7 +48,9 @@ MIDI_Lighter::Device_List::Device_List()
 		_DataGrid_Devices->ReadOnly					= true;
 		_DataGrid_Devices->MultiSelect				= false;
 		_DataGrid_Devices->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
-		_DataGrid_Devices->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^ >(2) {
+		_DataGrid_Devices->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::DisableResizing;
+		_DataGrid_Devices->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^ >(3) {
+			gcnew System::Windows::Forms::DataGridViewTextBoxColumn(),
 			gcnew System::Windows::Forms::DataGridViewTextBoxColumn(),
 			gcnew System::Windows::Forms::DataGridViewTextBoxColumn()
 		});
@@ -60,8 +62,9 @@ MIDI_Lighter::Device_List::Device_List()
 		_DataGrid_Devices->Columns[1]->HeaderText	= "Device Name";
 		_DataGrid_Devices->Columns[1]->AutoSizeMode	= System::Windows::Forms::DataGridViewAutoSizeColumnMode::Fill;
 		_DataGrid_Devices->Columns[1]->SortMode		= System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+		_DataGrid_Devices->Columns[2]->HeaderText	= "State";
+		_DataGrid_Devices->Columns[2]->SortMode		= System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
 	Table_Layout_Main->Controls->Add(_DataGrid_Devices, 0, 2);
-
 
 		_Label_Number_Devices = gcnew System::Windows::Forms::Label();
 		_Label_Number_Devices->Dock = System::Windows::Forms::DockStyle::Top;
@@ -75,6 +78,23 @@ MIDI_Lighter::Device_List::Device_List()
 	_Timer_Poll_Connection->Interval = 100;
 	_Timer_Poll_Connection->Tick += gcnew System::EventHandler(this, &Device_List::Timer_Poll_Connection_Tick);
 
+
+	_CellStyle_OK							= gcnew System::Windows::Forms::DataGridViewCellStyle();
+	_CellStyle_OK->Font						= gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Bold);
+	_CellStyle_OK->ForeColor				= System::Drawing::Color::FromArgb(  0, 187,   0);
+	_CellStyle_OK->SelectionForeColor		= _CellStyle_OK->ForeColor;
+	_CellStyle_OK->BackColor				= System::Drawing::Color::FromArgb(255, 255, 255);
+
+	_CellStyle_Pending						= gcnew System::Windows::Forms::DataGridViewCellStyle();
+	_CellStyle_Pending->Font				= gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Bold);
+	_CellStyle_Pending->ForeColor			= System::Drawing::Color::FromArgb(  0,   0,   0);
+	_CellStyle_Pending->BackColor			= System::Drawing::Color::FromArgb(202,  81,   0);
+	_CellStyle_Pending->SelectionBackColor	= _CellStyle_Pending->BackColor;
+
+
+	_List_Pending = gcnew System::Collections::Generic::List<System::Boolean>;
+
+
 	_Current_USB_Connection_Status = USB_CONNECTION::DISCONNECTED;
 
 	GUI_USB_Disconnect_Update();
@@ -85,14 +105,18 @@ MIDI_Lighter::Device_List::Device_List()
 System::Void MIDI_Lighter::Device_List::Button_Refresh_Click(System::Object ^ sender, System::EventArgs ^ e)
 {
 	_DataGrid_Devices->Rows->Clear();
+	_List_Pending->Clear();
 
 	System::Collections::Generic::List<MIDI_Lighter_Wrapper::Device^ >^ Device_List = _MIDI_Lighter->Get_Device_List();
 
 	for (int i = 0; i < Device_List->Count; i++)
 	{
-		_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(2) { (Device_List[i]->Index + 1).ToString(), Device_List[i]->Name });
-	}
+		_List_Pending->Add(false);
 
+		_DataGrid_Devices->Rows->Add(gcnew cli::array< System::String^ >(3) { (Device_List[i]->Index + 1).ToString(), Device_List[i]->Name, "OK" });
+		_DataGrid_Devices->Rows[i]->Cells[2]->Style = _CellStyle_OK;
+	}
+	
 	Label_Number_Devices_Update();
 }
 
@@ -147,6 +171,7 @@ System::Void MIDI_Lighter::Device_List::DataGrid_Devices_OnSelectionChanged(Syst
 			if (!Success) { Sync_Status_Update(SYNC_STATUS::FAILED); }
 			Configuration_RGB_Order_Update(Configuration_RGB_Order);
 
+			Configuration_Changed(_List_Pending[Selected_Index]);
 			Sync_Status_Update(SYNC_STATUS::SYNCED);
 		}
 		else
@@ -203,6 +228,49 @@ System::Void MIDI_Lighter::Device_List::GUI_USB_Disconnect_Update()
 	Sync_Status_Update(SYNC_STATUS::UNKNOWN);
 }
 
+System::Void MIDI_Lighter::Device_List::EEPROM_Write_Set_Pending(System::Boolean pending)
+{
+	if (_MIDI_Lighter->IsConnected())
+	{
+		System::Windows::Forms::DataGridViewRow^ Selected_Row = nullptr;
+
+		System::Windows::Forms::DataGridViewSelectedRowCollection^ Rows = _DataGrid_Devices->SelectedRows;
+		for each(System::Windows::Forms::DataGridViewRow^ Row in Rows)
+		{
+			Selected_Row = Row;
+		}
+		
+		if(Selected_Row != nullptr)
+		{
+			_List_Pending[Selected_Row->Index] = pending;
+			Configuration_Changed(pending);
+		}
+	}
+
+	Status_Cell_Update();
+}
+
+System::Void MIDI_Lighter::Device_List::Status_Cell_Update()
+{
+	for (int i = 0; i < _DataGrid_Devices->RowCount;i++)
+	{
+		if (_List_Pending[i] == true)
+		{
+			_DataGrid_Devices->Rows[i]->Cells[2]->Style = _CellStyle_Pending;
+			_DataGrid_Devices->Rows[i]->Cells[2]->Value = "Pending";
+		}
+		else
+		{
+			_DataGrid_Devices->Rows[i]->Cells[2]->Style = _CellStyle_OK;
+			_DataGrid_Devices->Rows[i]->Cells[2]->Value = "OK";
+		}
+	}
+	_DataGrid_Devices->Update();
+}
+
+/////////////////////////////
+// Public Update Functions //
+/////////////////////////////
 System::Void MIDI_Lighter::Device_List::Update_Configuration_MIDI(MIDI_Lighter_Wrapper::Configuration_MIDI^ configuration_midi)
 {
 	if (_MIDI_Lighter->IsConnected())
@@ -214,7 +282,7 @@ System::Void MIDI_Lighter::Device_List::Update_Configuration_MIDI(MIDI_Lighter_W
 		}
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
-		Configuration_Changed(true);
+		EEPROM_Write_Set_Pending(true);
 	}
 }
 
@@ -229,7 +297,7 @@ System::Void MIDI_Lighter::Device_List::Update_Configuration_No_Data_Light(MIDI_
 		}
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
-		Configuration_Changed(true);
+		EEPROM_Write_Set_Pending(true);
 	}
 }
 
@@ -244,7 +312,7 @@ System::Void MIDI_Lighter::Device_List::Update_Configuration_Permanent_Light(MID
 		}
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
-		Configuration_Changed(true);
+		EEPROM_Write_Set_Pending(true);
 	}
 }
 
@@ -273,7 +341,7 @@ System::Void MIDI_Lighter::Device_List::Update_Device(MIDI_Lighter_Wrapper::Devi
 
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
-		Configuration_Changed(true);
+		EEPROM_Write_Set_Pending(true);
 	}
 }
 
@@ -288,7 +356,7 @@ System::Void MIDI_Lighter::Device_List::Update_Configuration_RGB_Order(MIDI_Ligh
 		}
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
-		Configuration_Changed(true);
+		EEPROM_Write_Set_Pending(true);
 	}
 }
 
@@ -298,7 +366,7 @@ System::Void MIDI_Lighter::Device_List::Update_EEPROM()
 	{
 		_MIDI_Lighter->Write_EEPROM();
 
-		Configuration_Changed(false);
+		EEPROM_Write_Set_Pending(false);
 	}
 }
 
