@@ -123,7 +123,8 @@ MIDI_Lighter_Wrapper::Configuration_No_Data_Light^ MIDI_Lighter_Wrapper::Get_Con
 																					Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Green],
 																					Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Blue]);
 	
-	Managed_Configuration_No_Data_Light->Timeout = Configuration_No_Data_Light.Timeout;
+	Managed_Configuration_No_Data_Light->Timeout	= Configuration_No_Data_Light.Timeout;
+	Managed_Configuration_No_Data_Light->Deactivate = (MIDI_Lighter_Wrapper::No_Data_Light_Deactivate)Configuration_No_Data_Light.Deactivate;
 
 	return Managed_Configuration_No_Data_Light;
 }
@@ -135,7 +136,8 @@ System::Boolean MIDI_Lighter_Wrapper::Set_Configuration_No_Data_Light(MIDI_Light
 	Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Red]	= no_data_light->Color.R;
 	Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Green]	= no_data_light->Color.G;
 	Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Blue]	= no_data_light->Color.B;
-	Configuration_No_Data_Light.Timeout = no_data_light->Timeout;
+	Configuration_No_Data_Light.Timeout		= no_data_light->Timeout;
+	Configuration_No_Data_Light.Deactivate	= (HAL::MIDI_Lighter::No_Data_Light_Deactivate)no_data_light->Deactivate;
 
 	return _MIDI_Lighter->Set_Configuration_No_Data_Light(Configuration_No_Data_Light);
 }

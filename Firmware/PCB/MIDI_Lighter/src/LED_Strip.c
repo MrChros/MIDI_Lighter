@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "Pin.h"
 #include "LED_Strip.h"
 #include "Configuration.h"
 
@@ -18,9 +19,6 @@
 #define GREEN				COLOR_GREEN
 #define BLUE				COLOR_BLUE
 
-#define STRIP_PIN_EN		PF7
-#define STRIP_ENABLE()		PORTF |= (1 << STRIP_PIN_EN)
-#define STRIP_DISABLE()		PORTF &= ~(1 << STRIP_PIN_EN)
 
 // ============================================================================================
 volatile uint8_t			_Color[3];

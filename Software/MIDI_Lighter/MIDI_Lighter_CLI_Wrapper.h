@@ -6,6 +6,14 @@ public ref class MIDI_Lighter_Wrapper
 {
 public:
 	
+		enum class No_Data_Light_Deactivate
+		{
+			ANY_TRAFFIC,
+			CHANNEL_MATCH,
+			EVENT_MATCH,
+			CHANNEL_AND_EVENT_MATCH
+		};
+	
 		enum class RGB_Order
 		{
 			RGB = 0,
@@ -200,13 +208,15 @@ public:
 
 	ref struct Configuration_No_Data_Light
 	{
-		System::Drawing::Color	Color;
-		System::Byte			Timeout;
+		System::Drawing::Color							Color;
+		System::Byte									Timeout;
+		MIDI_Lighter_Wrapper::No_Data_Light_Deactivate	Deactivate;
 
 		Configuration_No_Data_Light()
 		{
-			Color	= System::Drawing::Color::Black;
-			Timeout = 1;
+			Color		= System::Drawing::Color::Black;
+			Timeout		= 1;
+			Deactivate	= MIDI_Lighter_Wrapper::No_Data_Light_Deactivate::ANY_TRAFFIC;
 		}
 	};
 

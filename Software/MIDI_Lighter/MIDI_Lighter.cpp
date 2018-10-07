@@ -273,14 +273,7 @@ bool HAL::MIDI_Lighter::Set_Configuration_MIDI(HAL::MIDI_Lighter::Configuration_
 
 HAL::MIDI_Lighter::Configuration_No_Data_Light HAL::MIDI_Lighter::Get_Configuration_No_Data_Light(bool* read_success)
 {
-	if (_USB_Link.Open() == false)
-	{
-		if (read_success != NULL)
-		{
-			read_success[0] = false;
-		}
-		return HAL::MIDI_Lighter::Configuration_No_Data_Light();
-	}
+	if (_USB_Link.Open() == false) { if (read_success != NULL) { read_success[0] = false; } return HAL::MIDI_Lighter::Configuration_No_Data_Light(); }
 
 	_USB_Link.Buffer_Clear(_Endpoint_RX);
 
@@ -292,37 +285,20 @@ HAL::MIDI_Lighter::Configuration_No_Data_Light HAL::MIDI_Lighter::Get_Configurat
 
 	bool Write_Success = _USB_Link.Buffer_Write(_Endpoint_TX, Data, 3);
 
-	if (!Write_Success)
-	{
-		if (read_success != NULL)
-		{
-			read_success[0] = false;
-		}
-		return HAL::MIDI_Lighter::Configuration_No_Data_Light();
-	}
+	if (!Write_Success) { if (read_success != NULL) { read_success[0] = false; } return HAL::MIDI_Lighter::Configuration_No_Data_Light(); }
 
 	// wait for answer
 	uint8_t Answer[9];
 
-	bool Read_Success = _USB_Link.Buffer_Read(_Endpoint_RX, Answer, 9);
+	bool Read_Success = _USB_Link.Buffer_Read(_Endpoint_RX, Answer, 10);
 
-	if (!Read_Success)
-	{
-		// timeout
-		if (read_success != NULL)
-		{
-			read_success[0] = false;
-		}
-		return HAL::MIDI_Lighter::Configuration_No_Data_Light();
-	}
+	// timeout
+	if (!Read_Success) { if (read_success != NULL) { read_success[0] = false; } return HAL::MIDI_Lighter::Configuration_No_Data_Light(); }
 
-	if (Answer[8] != (uint8_t)HAL::MIDI_Lighter::Command::Terminator)
+	if (Answer[9] != (uint8_t)HAL::MIDI_Lighter::Command::Terminator)
 	{
 		// something is wrong
-		if (read_success != NULL)
-		{
-			read_success[0] = false;
-		}
+		if (read_success != NULL) { read_success[0] = false; }
 		return HAL::MIDI_Lighter::Configuration_No_Data_Light();
 	}
 
@@ -331,12 +307,11 @@ HAL::MIDI_Lighter::Configuration_No_Data_Light HAL::MIDI_Lighter::Get_Configurat
 	Current_Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Red]	= (HAL::Common::Int_From_Ascii_Hex((char*)&Answer[0], 2));
 	Current_Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Green] = (HAL::Common::Int_From_Ascii_Hex((char*)&Answer[2], 2));
 	Current_Configuration_No_Data_Light.Color[(int)HAL::MIDI_Lighter::Color::Blue]	= (HAL::Common::Int_From_Ascii_Hex((char*)&Answer[4], 2));
-	Current_Configuration_No_Data_Light.Timeout = (HAL::Common::Int_From_Ascii_Hex((char*)&Answer[6], 2) % 120);
+	Current_Configuration_No_Data_Light.Timeout		= (HAL::Common::Int_From_Ascii_Hex((char*)&Answer[6], 2) % 120);
+	Current_Configuration_No_Data_Light.Deactivate	= (HAL::MIDI_Lighter::No_Data_Light_Deactivate)(HAL::Common::Int_From_Ascii_Hex((char*)&Answer[8], 1));
 
-	if (read_success != NULL)
-	{
-		read_success[0] = true;
-	}
+	if (read_success != NULL) { read_success[0] = true; }
+
 	return Current_Configuration_No_Data_Light;
 }
 
@@ -347,7 +322,7 @@ bool HAL::MIDI_Lighter::Set_Configuration_No_Data_Light(HAL::MIDI_Lighter::Confi
 		return false;
 	}
 
-	uint8_t Data[1 + 1 + 8 + 1];
+	uint8_t Data[1 + 1 + 9 + 1];
 
 	Data[0] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
 	Data[1] = (uint8_t)HAL::MIDI_Lighter::Command::Set_No_Data_Light;
@@ -359,9 +334,10 @@ bool HAL::MIDI_Lighter::Set_Configuration_No_Data_Light(HAL::MIDI_Lighter::Confi
 	Data[7] = HAL::Common::Ascii( (uint8_t)no_data_light.Color[(int)HAL::MIDI_Lighter::Color::Blue]		& 0x0F);
 	Data[8] = HAL::Common::Ascii(((uint8_t)no_data_light.Timeout & 0xF0) >> 4);
 	Data[9] = HAL::Common::Ascii( (uint8_t)no_data_light.Timeout & 0x0F);
-	Data[10] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
+	Data[10] = HAL::Common::Ascii((uint8_t)no_data_light.Deactivate & 0x0F);
+	Data[11] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
 
-	return _USB_Link.Buffer_Write(_Endpoint_TX, Data, 1 + 1 + 8 + 1);
+	return _USB_Link.Buffer_Write(_Endpoint_TX, Data, 1 + 1 + 9 + 1);
 }
 
 HAL::MIDI_Lighter::Configuration_Permanent_Light HAL::MIDI_Lighter::Get_Configuration_Permanent_Light(bool* read_success)

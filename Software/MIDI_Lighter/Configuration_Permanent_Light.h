@@ -25,6 +25,8 @@ namespace MIDI_Lighter
 		System::Windows::Forms::Label^			_Label_Color;
 		System::Windows::Forms::ColorDialog^	_ColorDialog;
 
+		System::Boolean							_Internal_Update;
+
 		System::Void Button_Color_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

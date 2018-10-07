@@ -3,10 +3,9 @@
 MIDI_Lighter::Configuration_RGB_Order::Configuration_RGB_Order()
 {
 	System::Windows::Forms::TableLayoutPanel^ Table_Layout_Main = gcnew System::Windows::Forms::TableLayoutPanel();
-	Table_Layout_Main->RowCount = 3;
+	Table_Layout_Main->RowCount = 2;
 	Table_Layout_Main->ColumnCount = 4;
 	Table_Layout_Main->Dock = System::Windows::Forms::DockStyle::Top;
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 8)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute, 100)));
@@ -45,7 +44,7 @@ MIDI_Lighter::Configuration_RGB_Order::Configuration_RGB_Order()
 		Label_Horizontal_Line_1->Dock = System::Windows::Forms::DockStyle::Top;
 		Label_Horizontal_Line_1->Height = 2;
 		Label_Horizontal_Line_1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_1, 0, 2);
+	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_1, 0, 1);
 	Table_Layout_Main->SetColumnSpan(Label_Horizontal_Line_1, 4);
 
 	//	_GroupBox_Main = gcnew System::Windows::Forms::GroupBox();
@@ -70,7 +69,10 @@ System::Void MIDI_Lighter::Configuration_RGB_Order::Update(MIDI_Lighter_Wrapper:
 {
 	_Internal_Update = true;
 
-	_ComboBox_RGB_Order->SelectedIndex = (int)configuration_rgb_order->RGB_Order;
+	if((int32_t)configuration_rgb_order->RGB_Order < _ComboBox_RGB_Order->Items->Count)
+	{
+		_ComboBox_RGB_Order->SelectedIndex = (int)configuration_rgb_order->RGB_Order;
+	}
 
 	_Internal_Update = false;
 }

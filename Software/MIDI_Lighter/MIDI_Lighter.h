@@ -37,6 +37,14 @@ namespace HAL
 			Read_EEPROM			= 'y'
 		};
 
+		enum class No_Data_Light_Deactivate
+		{
+			ANY_TRAFFIC,
+			CHANNEL_MATCH,
+			EVENT_MATCH,
+			CHANNEL_AND_EVENT_MATCH
+		};
+		
 		enum class RGB_Order
 		{
 			RGB = 0,
@@ -230,8 +238,9 @@ namespace HAL
 
 		struct Configuration_No_Data_Light
 		{
-			uint8_t Color[3];
-			uint8_t Timeout;
+			uint8_t										Color[3];
+			uint8_t										Timeout;
+			HAL::MIDI_Lighter::No_Data_Light_Deactivate Deactivate;
 
 			Configuration_No_Data_Light()
 			{
@@ -240,6 +249,8 @@ namespace HAL
 				Color[(int)HAL::MIDI_Lighter::Color::Blue]	= 0;
 
 				Timeout = 1;
+
+				Deactivate = HAL::MIDI_Lighter::No_Data_Light_Deactivate::ANY_TRAFFIC;
 			}
 		};
 

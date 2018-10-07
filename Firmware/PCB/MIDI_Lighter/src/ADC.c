@@ -53,13 +53,13 @@ void ADC_Init(void)
 	}
 	else if(Value_To_Measure == TEST)
 	{
-		ADMUX =  (0b00		<< REFS0) |	// Voltage Reference Selection = AREF, Internal Vref turned off
-				 (0b0		<< ADLAR) | // Result bits will be right adjusted
-				 (0b000011	<< MUX0);	// Select ADC11 as input for the ADC MUX
-
-
-		ADCSRB = (0b0011	<< ADTS0) |	// Select Timer0 as Trigger for ADC Conversion => ADC Conversion every 5ms, 200 Measurements/s)
-				 (0b1		<< MUX5);	// Needs to be One for ADC11
+//		ADMUX =  (0b00		<< REFS0) |	// Voltage Reference Selection = AREF, Internal Vref turned off
+//				 (0b0		<< ADLAR) | // Result bits will be right adjusted
+//				 (0b000011	<< MUX0);	// Select ADC11 as input for the ADC MUX
+//
+//
+//		ADCSRB = (0b0011	<< ADTS0) |	// Select Timer0 as Trigger for ADC Conversion => ADC Conversion every 5ms, 200 Measurements/s)
+//				 (0b1		<< MUX5);	// Needs to be One for ADC11
 	}
 	else if(Value_To_Measure == TEMPERATURE)
 	{

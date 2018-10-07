@@ -39,7 +39,7 @@
 #define COMMAND_NO_DATA_LIGHT_GET			'c'
 #define COMMAND_NO_DATA_LIGHT_GET_LENGTH	 1
 #define COMMAND_NO_DATA_LIGHT_SET			'C'
-#define COMMAND_NO_DATA_LIGHT_SET_LENGTH	 9
+#define COMMAND_NO_DATA_LIGHT_SET_LENGTH	 10
 
 #define COMMAND_PERMANENT_LIGHT_GET			'd'
 #define COMMAND_PERMANENT_LIGHT_GET_LENGTH	 1
@@ -125,6 +125,7 @@ void Command_Parse_Command(void)
 			Send_Success = USB_Send_Int_Hex(Configuration_Get_No_Data_Light_Color(COLOR_GREEN)	, 2, FALSE);	if(Send_Success==FALSE) { break; }
 			Send_Success = USB_Send_Int_Hex(Configuration_Get_No_Data_Light_Color(COLOR_BLUE)	, 2, FALSE);	if(Send_Success==FALSE) { break; }
 			Send_Success = USB_Send_Int_Hex(Configuration_Get_No_Data_Light_Timeout()			, 2, FALSE);	if(Send_Success==FALSE) { break; }
+			Send_Success = USB_Send_Int_Hex(Configuration_Get_No_Data_Light_Deactivate()		, 1, FALSE);	if(Send_Success==FALSE) { break; }
 			Send_Success = USB_Send_Char(COMMAND_TERMINATOR);
 			break;
 
@@ -133,7 +134,8 @@ void Command_Parse_Command(void)
 			Configuration_Set_No_Data_Light(CharArray_To_Number(&_Commands_Buffer.Data[1], 2),	// Color Red
 											CharArray_To_Number(&_Commands_Buffer.Data[3], 2),	// Color Green
 											CharArray_To_Number(&_Commands_Buffer.Data[5], 2),	// Color Blue
-											CharArray_To_Number(&_Commands_Buffer.Data[7], 2));	// Timeout
+											CharArray_To_Number(&_Commands_Buffer.Data[7], 2),	// Timeout
+											CharArray_To_Number(&_Commands_Buffer.Data[9], 1));	// Deactivate
 			break;
 
 		case COMMAND_PERMANENT_LIGHT_GET:

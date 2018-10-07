@@ -35,6 +35,14 @@
 #define COLOR_GREEN			1
 #define COLOR_BLUE			2
 
+enum NO_DATA_LIGHT_DEACTIVATE_e
+{
+	ANY_TRAFFIC,
+	CHANNEL_MATCH,
+	EVENT_MATCH,
+	CHANNEL_AND_EVENT_MATCH
+};
+
 enum RGB_ORDER_e
 {
 	RGB = 0,
@@ -60,7 +68,8 @@ void	Configuration_Set_MIDI(uint8_t channel, uint8_t note_red, uint8_t note_gree
 
 uint8_t Configuration_Get_No_Data_Light_Color(uint8_t color);
 uint8_t Configuration_Get_No_Data_Light_Timeout(void);
-void	Configuration_Set_No_Data_Light(uint8_t red, uint8_t green, uint8_t blue, uint8_t timeout);
+uint8_t	Configuration_Get_No_Data_Light_Deactivate(void);
+void	Configuration_Set_No_Data_Light(uint8_t red, uint8_t green, uint8_t blue, uint8_t timeout, uint8_t deactivate);
 
 uint8_t Configuration_Get_Permanent_Light_Color(uint8_t color);
 void	Configuration_Set_Permanent_Light(uint8_t red, uint8_t green, uint8_t blue);

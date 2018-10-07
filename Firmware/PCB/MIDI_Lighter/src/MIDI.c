@@ -8,6 +8,7 @@
 // ============================================================================================
 #include <avr/io.h>
 
+#include "Pin.h"
 #include "MIDI.h"
 #include "UART.h"
 #include "LED_Strip.h"
@@ -23,18 +24,6 @@
 #define GREEN					1
 #define BLUE					2
 #define UNDEFINED				255
-
-
-/////////////////
-// LED Defines //
-/////////////////
-#define LED0	PF0
-#define LED1	PF1
-#define LED2	PF4
-
-#define LED_ON(_LED_)		PORTF &= ~(1 << _LED_)
-#define LED_OFF(_LED_)		PORTF |= (1 << _LED_)
-#define LED_TOGGLE(_LED_)	PORTF ^= _BV(_LED_)
 
 
 /////////////////
@@ -119,6 +108,19 @@ void MIDI_Init(void)
 	
 
 	_Mode						= MIDI;
+
+
+	////////////////////////
+	// Setting Debug Pins //
+	////////////////////////
+
+	DEBUG_SET_OUTPUT(DEBUG_DDR_SCL, DEBUG_PIN_SCL);	// Note On Event
+	DEBUG_SET_OUTPUT(DEBUG_DDR_SDA, DEBUG_PIN_SDA); // Note Off Event
+	DEBUG_SET_OUTPUT(DEBUG_DDR_PB4, DEBUG_PIN_PB4); // Note Off Event takes place
+
+	DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
+	DEBUG_OFF(DEBUG_PORT_SDA, DEBUG_PIN_SDA);
+	DEBUG_OFF(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
 }
 
 
@@ -129,24 +131,85 @@ void MIDI_Process(void)
 {
 	while(UART_Data_Available()>0)
 	{
+		// Read Data from incoming UART Buffer
 		uint8_t Data = UART_Buffer_Read();
-	
-		Timer_No_Data_Light_Reset();
-		if(Timer_No_Data_Light_On() == FALSE && _No_Data_Light_On_Old == TRUE)
-		{
-			_No_Data_Light_On_Old	= Timer_No_Data_Light_On();
-			_Color[RED]				= 0;
-			_Color[GREEN]			= 0;
-			_Color[BLUE]			= 0;
-			_Update_LED_Strip		= TRUE;
-		}
-	
+		
+
+		// Ignore Data if Permanent Light Mode is activated
 		if(_Mode != MIDI) { continue; }
-	
+
+
+		///////////////////////////////
+		// Compare Channel and Event //
+		///////////////////////////////
+		uint8_t Channel_Match	= FALSE;
+		uint8_t Event_Match		= FALSE;
+
+		if(_Parsing.State == WAITING)
+		{
+			if((Data & 0x0F) == Configuration_Get_MIDI_Channel())
+			{
+				Channel_Match = TRUE;
+			}
+			if((((Data & 0xF0) >> 4) == MIDI_COMPARE_NOTE_ON) | ((((Data & 0xF0) >> 4) == MIDI_COMPARE_NOTE_OFF)))
+			{
+				Event_Match = TRUE;
+			}
+		}
+
+
+		///////////////////////////////////
+		// Check for No Data Light Reset //
+		///////////////////////////////////
+		uint8_t No_Data_Light_Reset = FALSE;
+
+		if(Configuration_Get_No_Data_Light_Deactivate() == ANY_TRAFFIC)
+		{
+			No_Data_Light_Reset = TRUE;
+		}
+		else if(Configuration_Get_No_Data_Light_Deactivate() == CHANNEL_MATCH)
+		{
+			if(Channel_Match == TRUE)
+			{
+				No_Data_Light_Reset = TRUE;
+			}
+		}
+		else if(Configuration_Get_No_Data_Light_Deactivate() == EVENT_MATCH)
+		{
+			if(Event_Match == TRUE)
+			{
+				No_Data_Light_Reset = TRUE;
+			}
+		}
+		else if(Configuration_Get_No_Data_Light_Deactivate() == CHANNEL_MATCH)
+		{
+			if(Event_Match == TRUE && Channel_Match == TRUE)
+			{
+				No_Data_Light_Reset = TRUE;
+			}
+		}
+
+		if(No_Data_Light_Reset == TRUE)
+		{
+			Timer_No_Data_Light_Reset();
+			if(Timer_No_Data_Light_On() == FALSE && _No_Data_Light_On_Old == TRUE)
+			{
+				_No_Data_Light_On_Old	= Timer_No_Data_Light_On();
+				_Color[RED]				= 0;
+				_Color[GREEN]			= 0;
+				_Color[BLUE]			= 0;
+				_Update_LED_Strip		= TRUE;
+			}
+		}
+		
+
+		/////////////////////////////////
+		// Parse received MIDI command //
+		/////////////////////////////////
 		switch(_Parsing.State)
 		{
 			case WAITING:
-				if(((((Data & 0xF0) >> 4) == MIDI_COMPARE_NOTE_ON) | ((((Data & 0xF0) >> 4) == MIDI_COMPARE_NOTE_OFF))) && ((Data & 0x0F) == Configuration_Get_MIDI_Channel()))
+				if(Event_Match == TRUE && Channel_Match == TRUE)
 				{
 					_Parsing.State 	= STATUS_AND_CHANNEL_RECEIVED;
 					_Parsing.Event	= ((Data & 0xF0) >> 4);
@@ -196,6 +259,9 @@ void MIDI_Process(void)
 					{
 						_Color[_Parsing.Color] 				= (uint8_t)(((uint16_t)Data * (uint16_t)Configuration_Get_MIDI_Factor())/(uint16_t)100);
 						_Note_Off_Pending[_Parsing.Color]	= FALSE;
+						_Note_Off_Counter[_Parsing.Color]	= 0;
+						
+						DEBUG_ON(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
 					}
 					else if(_Parsing.Event == MIDI_COMPARE_NOTE_OFF)
 					{
@@ -203,6 +269,8 @@ void MIDI_Process(void)
 						{
 							_Note_Off_Pending[_Parsing.Color]	= TRUE;
 							_Note_Off_Counter[_Parsing.Color]	= NOTE_OFF_TIMEOUT;
+							
+							DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
 						}
 						else
 						{
@@ -237,7 +305,6 @@ void MIDI_Process(void)
 	 * Only applies when first data of a MIDI Command has been received
 	 * Note: The code only reacts to 'Note On' and 'Note Off' Event Commands
 	 */
-
 	if((_Parsing.State == STATUS_AND_CHANNEL_RECEIVED) || (_Parsing.State == NOTE_RECEIVED))
 	{
 		_Timeout++;
@@ -270,6 +337,8 @@ void MIDI_Process(void)
 				_Color[i]				= 0;
 				_Note_Off_Pending[i]	= FALSE;
 				_Update_LED_Strip		= TRUE;
+
+				DEBUG_TOGGLE(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
 			}
 		}
 	}

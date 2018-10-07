@@ -237,6 +237,9 @@
     <Compile Include="src\MIDI.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\Pin.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Timer_and_Button.c">
       <SubType>compile</SubType>
     </Compile>

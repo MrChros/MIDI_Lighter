@@ -26,6 +26,7 @@ namespace MIDI_Lighter
 		System::Windows::Forms::Label^			_Label_Color;
 		System::Windows::Forms::ColorDialog^	_ColorDialog;
 		System::Windows::Forms::NumericUpDown^	_Numeric_Timeout;
+		System::Windows::Forms::ComboBox^		_ComboBox_Deactivate;
 
 		System::Boolean							_Internal_Update;
 

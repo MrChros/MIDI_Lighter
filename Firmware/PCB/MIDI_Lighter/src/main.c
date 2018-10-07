@@ -8,6 +8,7 @@
 
 #include "ADC.h"
 #include "USB.h"
+#include "Pin.h"
 #include "Help.h"
 #include "MIDI.h"
 #include "UART.h"
@@ -40,17 +41,7 @@
 #define CPU_125kHz			0x07
 #define CPU_62kHz			0x08
 
-/////////////////
-// LED Defines //
-/////////////////
-#define LED0				PF0
-#define LED1				PF1
-#define LED2				PF4
-#define LEDS				PF5
 
-#define LED_ON(_LED_)		PORTF &= ~(1 << _LED_)
-#define LED_OFF(_LED_)		PORTF |= (1 << _LED_)
-#define LED_TOGGLE(_LED_)	PORTF ^= _BV(_LED_)
 
 
 /*******************************************************************

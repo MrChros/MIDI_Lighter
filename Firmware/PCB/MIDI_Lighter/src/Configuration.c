@@ -43,6 +43,7 @@ volatile struct Configuration_No_Data_Light_s
 {
 	uint8_t Color[3];
 	uint8_t Timeout;
+	uint8_t Deactivate;
 } _Configuration_No_Data_Light;
 
 volatile struct Configuration_Permanent_Light_s
@@ -198,7 +199,12 @@ uint8_t Configuration_Get_No_Data_Light_Timeout(void)
 	return _Configuration_No_Data_Light.Timeout;
 }
 
-void Configuration_Set_No_Data_Light(uint8_t red, uint8_t green, uint8_t blue, uint8_t timeout)
+uint8_t	Configuration_Get_No_Data_Light_Deactivate(void)
+{
+	return _Configuration_No_Data_Light.Deactivate;
+}
+
+void Configuration_Set_No_Data_Light(uint8_t red, uint8_t green, uint8_t blue, uint8_t timeout, uint8_t deactivate)
 {
 	_Configuration_No_Data_Light.Color[COLOR_RED]	= red;
 	_Configuration_No_Data_Light.Color[COLOR_GREEN]	= green;
@@ -206,6 +212,9 @@ void Configuration_Set_No_Data_Light(uint8_t red, uint8_t green, uint8_t blue, u
 
 	if(timeout == 0) { timeout = 1; }
 	_Configuration_No_Data_Light.Timeout = timeout;
+
+	if(deactivate > CHANNEL_AND_EVENT_MATCH) { deactivate = CHANNEL_AND_EVENT_MATCH; }
+	_Configuration_No_Data_Light.Deactivate = deactivate;
 }
 
 uint8_t Configuration_Get_Permanent_Light_Color(uint8_t color)

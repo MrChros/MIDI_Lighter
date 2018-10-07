@@ -10,8 +10,8 @@ MIDI_Lighter::Device::Device()
 	Table_Layout_Main->Dock = System::Windows::Forms::DockStyle::Fill;
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  5)));		// 0
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 58)));		// 1
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));		// 2
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 68)));		// 3
+	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 60)));		// 2
+	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 38)));		// 3
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 60)));		// 4
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 40)));	// 0
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 60)));	// 1
@@ -21,13 +21,13 @@ MIDI_Lighter::Device::Device()
 	Table_Layout_Main->Controls->Add(_Configuration_MIDI, 0, 1);
 	Table_Layout_Main->SetRowSpan(_Configuration_MIDI, 4);
 
-		_Configuration_No_Data_Light = gcnew MIDI_Lighter::Configuration_No_Data_Light();
-		_Configuration_No_Data_Light->Dock = System::Windows::Forms::DockStyle::Fill;
-	Table_Layout_Main->Controls->Add(_Configuration_No_Data_Light, 1, 1);
-
 		_Configuration_Permanent_Light = gcnew MIDI_Lighter::Configuration_Permanent_Light();
 		_Configuration_Permanent_Light->Dock = System::Windows::Forms::DockStyle::Fill;
-	Table_Layout_Main->Controls->Add(_Configuration_Permanent_Light, 1, 2);
+	Table_Layout_Main->Controls->Add(_Configuration_Permanent_Light, 1, 1);
+
+		_Configuration_No_Data_Light = gcnew MIDI_Lighter::Configuration_No_Data_Light();
+		_Configuration_No_Data_Light->Dock = System::Windows::Forms::DockStyle::Fill;
+	Table_Layout_Main->Controls->Add(_Configuration_No_Data_Light, 1, 2);
 
 		_Configuration_RGB_Order = gcnew MIDI_Lighter::Configuration_RGB_Order();
 		_Configuration_RGB_Order->Dock = System::Windows::Forms::DockStyle::Fill;
