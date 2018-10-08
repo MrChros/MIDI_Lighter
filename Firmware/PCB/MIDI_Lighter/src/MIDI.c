@@ -108,20 +108,10 @@ void MIDI_Init(void)
 	_Timeout					= 0;
 	
 
+	/////////////////
+	// Inital Mode //
+	/////////////////
 	_Mode						= MIDI;
-
-
-	////////////////////////
-	// Setting Debug Pins //
-	////////////////////////
-
-//	DEBUG_SET_OUTPUT(DEBUG_DDR_SCL, DEBUG_PIN_SCL);	// Note On Event
-//	DEBUG_SET_OUTPUT(DEBUG_DDR_SDA, DEBUG_PIN_SDA); // Note Off Event
-//	DEBUG_SET_OUTPUT(DEBUG_DDR_PB4, DEBUG_PIN_PB4); // Note Off Event takes place
-//
-//	DEBUG_OFF(DEBUG_PORT_SCL, DEBUG_PIN_SCL);
-//	DEBUG_OFF(DEBUG_PORT_SDA, DEBUG_PIN_SDA);
-//	DEBUG_OFF(DEBUG_PORT_PB4, DEBUG_PIN_PB4);
 }
 
 
