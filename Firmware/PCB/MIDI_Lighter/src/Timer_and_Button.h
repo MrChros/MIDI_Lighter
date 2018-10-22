@@ -25,6 +25,8 @@ uint8_t Button_Long_Pressed(void);
 void	Timer_No_Data_Light_Reset(void);
 uint8_t	Timer_No_Data_Light_On(void);
 
+void	Timer_Set_Timer1_Top(uint16_t top);
+
 
 
 #endif /* TIMER_H_ */

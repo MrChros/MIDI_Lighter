@@ -14,27 +14,31 @@ namespace HAL
 	public:
 		enum class Command
 		{
-			Terminator			= 0x0D,	
+			Terminator				= 0x0D,	
 			
-			Set_Device_Name		= 'A',
-			Get_Device_Name		= 'a',
+			Set_Device_Name			= 'A',
+			Get_Device_Name			= 'a',
 
-			Set_MIDI			= 'B',
-			Get_MIDI			= 'b',
+			Set_MIDI				= 'B',
+			Get_MIDI				= 'b',
 
-			Set_No_Data_Light	= 'C',
-			Get_No_Data_Light	= 'c',
+			Set_No_Data_Light		= 'C',
+			Get_No_Data_Light		= 'c',
 
-			Set_Permanent_Light	= 'D',
-			Get_Permanent_Light = 'd',
+			Set_Permanent_Light		= 'D',
+			Get_Permanent_Light		= 'd',
 
-			Set_RGB_Order		= 'E',
-			Get_RGB_Order		= 'e',
+			Set_RGB_Order			= 'E',
+			Get_RGB_Order			= 'e',
 
-			Get_ADC				= 'f',
+			Get_ADC					= 'f',
 
-			Write_EEPROM		= 'Y',
-			Read_EEPROM			= 'y'
+			Set_Timer1_Top			= 'V',
+			
+			Set_Timer4_Prescaler	= 'W',
+
+			Write_EEPROM			= 'Y',
+			Read_EEPROM				= 'y'
 		};
 
 		enum class No_Data_Light_Deactivate
@@ -206,6 +210,25 @@ namespace HAL
 			B8	= 119
 		};
 
+		enum class Timer4_Presacler
+		{
+			PRESCALER_1 = 0x1,
+			PRESCALER_2 = 0x2,
+			PRESCALER_4 = 0x3,
+			PRESCALER_8 = 0x4,
+			PRESCALER_16 = 0x5,
+			PRESCALER_32 = 0x6,
+			PRESCALER_64 = 0x7,
+			PRESCALER_128 = 0x8,
+			PRESCALER_256 = 0x9,
+			PRESCALER_512 = 0xA,
+			PRESCALER_1024 = 0xB,
+			PRESCALER_2048 = 0xC,
+			PRESCALER_4096 = 0xD,
+			PRESCALER_8192 = 0xE,
+			PRESCALER_16384 = 0xF
+		};
+
 		struct Device
 		{
 			uint8_t Index;
@@ -302,7 +325,11 @@ namespace HAL
 		HAL::MIDI_Lighter::Configuration_RGB_Order			Get_Configuration_RGB_Order(bool* read_success);
 		bool												Set_Configuration_RGB_Order(HAL::MIDI_Lighter::Configuration_RGB_Order rgb_order);
 
-		uint16_t											Get_ADC(bool* read_success);
+		uint32_t											Get_ADC(bool* read_success);
+
+
+		bool												Set_Timer1_Top(uint16_t top);
+		bool												Set_Timer4_Prescaler(HAL::MIDI_Lighter::Timer4_Presacler prescaler);
 
 		uint8_t												Read_EEPROM(uint32_t address, bool* read_success);
 		bool												Write_EEPROM();

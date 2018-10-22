@@ -42,8 +42,10 @@ namespace MIDI_Lighter
 		/////////////////////
 		// Debug Functions //
 		/////////////////////
+		System::Void	Set_Timer1_Top(System::UInt16 top);
+		System::Void	Set_Timer4_Prescaler(MIDI_Lighter_Wrapper::Timer4_Presacler prescaler);
 		System::Byte	Read_EEPROM(uint32_t address);
-		System::Int16	Read_ADC();
+		System::UInt32	Read_ADC();
 
 	protected:
 		~Device_List() { };

@@ -4,17 +4,29 @@ MIDI_Lighter::Device::Device()
 {
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
+	System::Drawing::Font^ Font_Header = gcnew System::Drawing::Font(this->Font->Name, this->Font->Size + 2, System::Drawing::FontStyle::Bold);
+
 	System::Windows::Forms::TableLayoutPanel^ Table_Layout_Main = gcnew System::Windows::Forms::TableLayoutPanel();
 	Table_Layout_Main->RowCount		= 5;
 	Table_Layout_Main->ColumnCount	= 2;
 	Table_Layout_Main->Dock = System::Windows::Forms::DockStyle::Fill;
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  5)));		// 0
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 58)));		// 1
+	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));		// 0
+	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 38)));		// 1
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 60)));		// 2
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 38)));		// 3
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 60)));		// 4
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 40)));	// 0
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 60)));	// 1
+
+		_Label_Header				= gcnew System::Windows::Forms::Label();
+		_Label_Header->Dock			= System::Windows::Forms::DockStyle::Top;
+		_Label_Header->TextAlign	= System::Drawing::ContentAlignment::MiddleLeft;
+		_Label_Header->Font			= Font_Header;
+		_Label_Header->ForeColor	= System::Drawing::Color::White;
+		_Label_Header->BackColor	= System::Drawing::Color::FromArgb(23, 114, 202);
+		_Label_Header->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+	Table_Layout_Main->Controls->Add(_Label_Header, 0, 0);
+	Table_Layout_Main->SetColumnSpan(_Label_Header, 2);
 
 		_Configuration_MIDI = gcnew MIDI_Lighter::Configuration_MIDI();
 		_Configuration_MIDI->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -57,11 +69,21 @@ MIDI_Lighter::Device::Device()
 	this->Controls->Add(Table_Layout_Main);
 
 	_EEPROM_Write_Pending = false;
+
+	Update_Header("not connected");
 }
 
 ///////////////////////////////////////////////////
 // Setting Values received from MIDI Lighter PCB //
 ///////////////////////////////////////////////////
+System::Void MIDI_Lighter::Device::Connection_Connection_Changed(MIDI_Lighter::USB_CONNECTION status)
+{
+	if (status != MIDI_Lighter::USB_CONNECTION::CONNECTED)
+	{
+		Update_Header("disconnected");
+	}
+}
+
 System::Void MIDI_Lighter::Device::Set_Configuration_MIDI(MIDI_Lighter_Wrapper::Configuration_MIDI^	configuration_midi)
 {
 	_Configuration_MIDI->Update(configuration_midi);
@@ -80,6 +102,7 @@ System::Void MIDI_Lighter::Device::Set_Configuration_Permanent_Light(MIDI_Lighte
 System::Void MIDI_Lighter::Device::Set_Configuration_Device(MIDI_Lighter_Wrapper::Device^ device)
 {
 	_Device_Name->Update(device);
+	Update_Header(device->Name);
 }
 
 System::Void MIDI_Lighter::Device::Set_Configuration_RGB_Order(MIDI_Lighter_Wrapper::Configuration_RGB_Order^ configuration_rgb_order)
@@ -137,4 +160,9 @@ System::Void MIDI_Lighter::Device::Update_Configuration_RGB_Order(MIDI_Lighter_W
 System::Void MIDI_Lighter::Device::Button_Save_EEPROM_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	EEPROM_Save();
+}
+
+System::Void MIDI_Lighter::Device::Update_Header(System::String^ device_name)
+{
+	_Label_Header->Text = "Connected Device: " + device_name;
 }

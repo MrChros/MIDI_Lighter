@@ -11,8 +11,8 @@
 
 #include <avr/io.h>
 
-void		ADC_Init(void);
-uint16_t	ADC_Get_Value(void);
+void			ADC_Init(void);
+uint32_t	ADC_Get_Value(void);
 
 
 #endif /* ADC_H_ */

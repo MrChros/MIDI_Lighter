@@ -30,6 +30,7 @@ namespace MIDI_Lighter
 		event Changed_Configuration_RGB_Order^				Changed_Configuration_RGB_Order;
 		event EEPROM_Save^									EEPROM_Save;
 
+		System::Void Connection_Connection_Changed			(MIDI_Lighter::USB_CONNECTION status);
 		System::Void Set_Configuration_MIDI					(MIDI_Lighter_Wrapper::Configuration_MIDI^				configuration_midi);
 		System::Void Set_Configuration_No_Data_Light		(MIDI_Lighter_Wrapper::Configuration_No_Data_Light^		configuration_no_data_light);
 		System::Void Set_Configuration_Permanent_Light		(MIDI_Lighter_Wrapper::Configuration_Permanent_Light^	configuration_permanent_light);
@@ -44,6 +45,8 @@ namespace MIDI_Lighter
 	private:
 		System::Resources::ResourceManager^					_Resources;
 
+		System::Windows::Forms::Label^						_Label_Header;
+		
 		MIDI_Lighter::Configuration_MIDI^					_Configuration_MIDI;
 		MIDI_Lighter::Configuration_No_Data_Light^			_Configuration_No_Data_Light;
 		MIDI_Lighter::Configuration_Permanent_Light^		_Configuration_Permanent_Light;
@@ -60,6 +63,8 @@ namespace MIDI_Lighter
 		System::Void Update_Device							(MIDI_Lighter_Wrapper::Device^							device);
 		System::Void Update_Configuration_RGB_Order			(MIDI_Lighter_Wrapper::Configuration_RGB_Order^			configuration_rgb_order);
 
+
 		System::Void Button_Save_EEPROM_Click				(System::Object^ sender, System::EventArgs^ e);
+		System::Void Update_Header							(System::String^ device_name);
 	};
 }

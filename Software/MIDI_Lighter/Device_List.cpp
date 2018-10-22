@@ -341,6 +341,8 @@ System::Void MIDI_Lighter::Device_List::Update_Device(MIDI_Lighter_Wrapper::Devi
 
 		Sync_Status_Update(SYNC_STATUS::SYNCED);
 
+		Configuration_Device_Update(device);
+
 		EEPROM_Write_Set_Pending(true);
 	}
 }
@@ -370,6 +372,16 @@ System::Void MIDI_Lighter::Device_List::Update_EEPROM()
 	}
 }
 
+System::Void MIDI_Lighter::Device_List::Set_Timer1_Top(System::UInt16 top)
+{
+	_MIDI_Lighter->Set_Timer1_Top(top);
+}
+
+System::Void MIDI_Lighter::Device_List::Set_Timer4_Prescaler(MIDI_Lighter_Wrapper::Timer4_Presacler prescaler)
+{
+	_MIDI_Lighter->Set_Timer4_Prescaler(prescaler);
+}
+
 System::Byte MIDI_Lighter::Device_List::Read_EEPROM(uint32_t address)
 {
 	if (_MIDI_Lighter->IsConnected())
@@ -381,7 +393,7 @@ System::Byte MIDI_Lighter::Device_List::Read_EEPROM(uint32_t address)
 	return 0;
 }
 
-System::Int16 MIDI_Lighter::Device_List::Read_ADC()
+System::UInt32 MIDI_Lighter::Device_List::Read_ADC()
 {
 	if (_MIDI_Lighter->IsConnected())
 	{
@@ -389,5 +401,5 @@ System::Int16 MIDI_Lighter::Device_List::Read_ADC()
 		return _MIDI_Lighter->Get_ADC(Success);
 	}
 
-	return -1;
+	return 0;
 }

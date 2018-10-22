@@ -194,11 +194,11 @@ System::Boolean	MIDI_Lighter_Wrapper::Set_Configuration_RGB_Order(MIDI_Lighter_W
 	return _MIDI_Lighter->Set_Configuration_RGB_Order(Configuration_RGB_Order);
 }
 
-System::UInt16 MIDI_Lighter_Wrapper::Get_ADC(System::Boolean^ read_success)
+System::UInt32 MIDI_Lighter_Wrapper::Get_ADC(System::Boolean^ read_success)
 {
 	bool Success;
 
-	System::UInt16 Return_Value = _MIDI_Lighter->Get_ADC(&Success);
+	System::UInt32 Return_Value = _MIDI_Lighter->Get_ADC(&Success);
 
 	if (!Success)
 	{
@@ -224,6 +224,16 @@ System::Byte MIDI_Lighter_Wrapper::Read_EEPROM(System::UInt32 address, System::B
 	read_success = Success;
 
 	return Return_Value;
+}
+
+System::Boolean MIDI_Lighter_Wrapper::Set_Timer1_Top(System::UInt16 top)
+{
+	return _MIDI_Lighter->Set_Timer1_Top(top);
+}
+
+System::Boolean MIDI_Lighter_Wrapper::Set_Timer4_Prescaler(MIDI_Lighter_Wrapper::Timer4_Presacler prescaler)
+{
+	return _MIDI_Lighter->Set_Timer4_Prescaler((HAL::MIDI_Lighter::Timer4_Presacler)prescaler);
 }
 
 System::Boolean	MIDI_Lighter_Wrapper::Write_EEPROM()

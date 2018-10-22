@@ -3,7 +3,7 @@
 MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 {
 	this->Text = L"MIDI Lighter";
-	this->Size = System::Drawing::Size(1200, 480);
+	this->Size = System::Drawing::Size(1000, 460);
 
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
@@ -23,12 +23,12 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 
 			_Device					= gcnew MIDI_Lighter::Device();
 			_Device->Dock			= System::Windows::Forms::DockStyle::Fill;
-			_Device->BorderStyle	= System::Windows::Forms::BorderStyle::Fixed3D;
+//			_Device->BorderStyle	= System::Windows::Forms::BorderStyle::Fixed3D;
 		Table_Layout_Edit->Controls->Add(_Device, 0, 0);
 
 			_Debug					= gcnew MIDI_Lighter::Debug(_Device_List);
 			_Debug->Dock			= System::Windows::Forms::DockStyle::Fill;
-			_Debug->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
+//			_Debug->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
 		Table_Layout_Edit->Controls->Add(_Debug, 0, 1);
 
 			_Status_Bar = gcnew MIDI_Lighter::Status_Bar();
@@ -51,8 +51,9 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 	this->Controls->Add(_Split_Container);
 
 
-	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this, &MIDI_Lighter_GUI::Connection_Connection_Changed);
-	_Device_List->Sync_Status_Update					+= gcnew MIDI_Lighter::Sync_Status_Update					(this, &MIDI_Lighter_GUI::Sync_Status_Changed);
+	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this,		&MIDI_Lighter_GUI		::Connection_Connection_Changed);
+	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(_Device,	&MIDI_Lighter::Device	::Connection_Connection_Changed);
+	_Device_List->Sync_Status_Update					+= gcnew MIDI_Lighter::Sync_Status_Update					(this,		&MIDI_Lighter_GUI		::Sync_Status_Changed);
 	
 	_Device_List->Configuration_MIDI_Update				+= gcnew MIDI_Lighter::Configuration_MIDI_Update			(_Device, &MIDI_Lighter::Device::Set_Configuration_MIDI);
 	_Device_List->Configuration_No_Data_Light_Update	+= gcnew MIDI_Lighter::Configuration_No_Data_Light_Update	(_Device, &MIDI_Lighter::Device::Set_Configuration_No_Data_Light);
