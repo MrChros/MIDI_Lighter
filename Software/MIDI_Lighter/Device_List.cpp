@@ -2,6 +2,9 @@
 
 MIDI_Lighter::Device_List::Device_List()
 {
+//	this->AutoScaleDimensions = System::Drawing::SizeF(96.0f, 96.0f);
+//	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+	
 	_MIDI_Lighter	= gcnew MIDI_Lighter_Wrapper();
 	_Resources		= gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 	

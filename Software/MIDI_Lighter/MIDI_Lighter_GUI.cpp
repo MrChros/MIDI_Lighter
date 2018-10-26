@@ -4,18 +4,30 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 {
 	this->Text = L"MIDI Lighter";
 	this->Size = System::Drawing::Size(1000, 460);
+//	this->AutoScaleDimensions = System::Drawing::SizeF(96.0f, 96.0f);
+//	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
+	_Split_Container = gcnew System::Windows::Forms::SplitContainer();
+	_Split_Container->Dock					= System::Windows::Forms::DockStyle::Fill;
+	_Split_Container->BorderStyle			= System::Windows::Forms::BorderStyle::Fixed3D;
+	_Split_Container->Cursor				= System::Windows::Forms::Cursors::SizeWE;
+//	_Split_Container->AutoScaleDimensions	= System::Drawing::SizeF(96.0f, 96.0f);
+//	_Split_Container->AutoScaleMode			= System::Windows::Forms::AutoScaleMode::Font;
+	_Split_Container->Panel1->Cursor		= System::Windows::Forms::Cursors::Default;
+	_Split_Container->Panel2->Cursor		= System::Windows::Forms::Cursors::Default;
+	_Split_Container->SplitterMoved += gcnew System::Windows::Forms::SplitterEventHandler(this, &MIDI_Lighter_GUI::Split_Container_SplitterMoved);
 
 		_Device_List = gcnew MIDI_Lighter::Device_List();
 		_Device_List->Dock = System::Windows::Forms::DockStyle::Fill;
-
+	_Split_Container->Panel1->Controls->Add(_Device_List);
 	
 		System::Windows::Forms::TableLayoutPanel^ Table_Layout_Edit = gcnew System::Windows::Forms::TableLayoutPanel();
-		Table_Layout_Edit->RowCount		= 3;
-		Table_Layout_Edit->ColumnCount	= 1;
-		Table_Layout_Edit->Dock			= System::Windows::Forms::DockStyle::Fill;
+		Table_Layout_Edit->RowCount			= 3;
+		Table_Layout_Edit->ColumnCount		= 1;
+		Table_Layout_Edit->Dock				= System::Windows::Forms::DockStyle::Fill;
+//		Table_Layout_Edit->AutoScaleMode	= 
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 260)));		// 0
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent,  100)));		// 1
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  30)));		// 2
@@ -33,22 +45,15 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 
 			_Status_Bar = gcnew MIDI_Lighter::Status_Bar();
 		Table_Layout_Edit->Controls->Add(_Status_Bar, 0, 2);
-
-	
-	_Split_Container = gcnew System::Windows::Forms::SplitContainer();
-	_Split_Container->Dock				= System::Windows::Forms::DockStyle::Fill;
-	_Split_Container->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
-	_Split_Container->Cursor			= System::Windows::Forms::Cursors::SizeWE;
-	_Split_Container->Panel1->Cursor	= System::Windows::Forms::Cursors::Default;
-	_Split_Container->Panel2->Cursor	= System::Windows::Forms::Cursors::Default;
-	_Split_Container->SplitterMoved    += gcnew System::Windows::Forms::SplitterEventHandler(this, &MIDI_Lighter_GUI::Split_Container_SplitterMoved);
-	
-	
-	_Split_Container->Panel1->Controls->Add(_Device_List);
 	_Split_Container->Panel2->Controls->Add(Table_Layout_Edit);
 
 
+		System::Windows::Forms::MenuStrip^ Menu_Strip = gcnew System::Windows::Forms::MenuStrip();
+	
+
+
 	this->Controls->Add(_Split_Container);
+	this->Controls->Add(Menu_Strip);
 
 
 	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this,		&MIDI_Lighter_GUI		::Connection_Connection_Changed);

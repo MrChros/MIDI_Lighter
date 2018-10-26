@@ -2,6 +2,9 @@
 
 MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 {
+	this->AutoScaleDimensions = System::Drawing::SizeF(96.0f, 96.0f);
+	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+	
 	_Internal_Update = true;
 	
 	System::Drawing::Font^ Font_Bold	= gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Bold);
@@ -279,7 +282,11 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 	_ComboBox_Notes[1]->SelectedIndex = 0;
 	_ComboBox_Notes[2]->SelectedIndex = 0;
 
+	Label_Factor_Update(_TrackBar_Factor->Value);
+
 	_Internal_Update = false;
+
+	this->PerformAutoScale();
 }
 
 System::Void MIDI_Lighter::Configuration_MIDI::Update(MIDI_Lighter_Wrapper::Configuration_MIDI^ configuration_midi)
