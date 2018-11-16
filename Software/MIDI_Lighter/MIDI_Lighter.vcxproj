@@ -192,6 +192,7 @@
     <Image Include="Icon\connect.png" />
     <Image Include="Icon\cross.png" />
     <Image Include="Icon\disconnect.png" />
+    <Image Include="Icon\exit.png" />
     <Image Include="Icon\help.png" />
     <Image Include="Icon\palette.png" />
     <Image Include="Icon\tick.png" />

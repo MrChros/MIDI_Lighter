@@ -47,13 +47,34 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 		Table_Layout_Edit->Controls->Add(_Status_Bar, 0, 2);
 	_Split_Container->Panel2->Controls->Add(Table_Layout_Edit);
 
-
+	////////////////
+	// Menu Strip //
+	////////////////
 		System::Windows::Forms::MenuStrip^ Menu_Strip = gcnew System::Windows::Forms::MenuStrip();
+			
+			System::Windows::Forms::ToolStripMenuItem^ Item_File = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_File->Text = "File";
+			Item_File->DropDownItems->Add("Refresh Devices", (cli::safe_cast<System::Drawing::Image^>(_Resources->GetObject(L"arrow_refresh"))), nullptr);
+			Item_File->DropDownItems->Add(gcnew System::Windows::Forms::ToolStripSeparator());
+			Item_File->DropDownItems->Add("Exit", (cli::safe_cast<System::Drawing::Image^>(_Resources->GetObject(L"exit"))), gcnew System::EventHandler(this, &MIDI_Lighter_GUI::Application_Exit));
+		Menu_Strip->Items->Add(Item_File);
+
+			System::Windows::Forms::ToolStripMenuItem^ Item_Preset = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_Preset->Text = "Configuration Presets";
+		Menu_Strip->Items->Add(Item_Preset);
+
+			System::Windows::Forms::ToolStripMenuItem^ Item_Help = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_Help->Text = "Help";
+		Menu_Strip->Items->Add(Item_Help);
 	
+
+	
+
 
 
 	this->Controls->Add(_Split_Container);
 	this->Controls->Add(Menu_Strip);
+	
 
 
 	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this,		&MIDI_Lighter_GUI		::Connection_Connection_Changed);
@@ -99,4 +120,9 @@ System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Sync_Status_Changed(MIDI_Lighte
 System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Configuration_Changed(System::Boolean pending)
 {
 	
+}
+
+System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Application_Exit(System::Object^ sender, System::EventArgs^ e)
+{
+	System::Windows::Forms::Application::Exit();
 }
