@@ -513,12 +513,12 @@ bool HAL::MIDI_Lighter::Set_Configuration_RGB_Order(HAL::MIDI_Lighter::Configura
 	return _USB_Link.Buffer_Write(_Endpoint_TX, Data, 1 + 1 + 1 + 1);
 }
 
-uint16_t HAL::MIDI_Lighter::Get_ADC(bool* read_success)
+uint32_t HAL::MIDI_Lighter::Get_ADC(bool* read_success)
 {
 	if (_USB_Link.Open() == false) { if (read_success != NULL) { read_success[0] = false; } return 0; }
 
 	_USB_Link.Buffer_Clear(_Endpoint_RX);
-	uint8_t Data[3];
+	uint8_t Data[8];
 
 	Data[0] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
 	Data[1] = (uint8_t)HAL::MIDI_Lighter::Command::Get_ADC;
@@ -529,21 +529,59 @@ uint16_t HAL::MIDI_Lighter::Get_ADC(bool* read_success)
 	if (!Write_Success) { if (read_success != NULL) { read_success[0] = false; } return 0; }
 
 	// wait for answer
-	uint8_t Answer[4];
+	uint8_t Answer[9];
 
-	bool Read_Success = _USB_Link.Buffer_Read(_Endpoint_RX, Answer, 4);
+	bool Read_Success = _USB_Link.Buffer_Read(_Endpoint_RX, Answer, 9);
 
 	// timeout
 	if (!Read_Success) { if (read_success != NULL) { read_success[0] = false; } return 0; }
 
 	// Terminator not received on expected position
-	if (Answer[3] != (uint8_t)HAL::MIDI_Lighter::Command::Terminator) { if (read_success != NULL) { read_success[0] = false; } return 0; }
+	if (Answer[8] != (uint8_t)HAL::MIDI_Lighter::Command::Terminator) { if (read_success != NULL) { read_success[0] = false; } return 0; }
 
 
-	uint16_t Return_Value = HAL::Common::Int_From_Ascii_Hex((char*)&Answer[0], 3);
+	uint32_t Return_Value;
+	Return_Value	= HAL::Common::Int_From_Ascii_Hex((char*)&Answer[0], 8);	// Sum
 
 	if (read_success != NULL) { read_success[0] = true; }
 	return Return_Value;
+}
+
+bool HAL::MIDI_Lighter::Set_Timer1_Top(uint16_t top)
+{
+	if (_USB_Link.Open() == false)
+	{
+		return false;
+	}
+
+	uint8_t Data[1 + 1 + 4 + 1];
+
+	Data[0] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
+	Data[1] = (uint8_t)HAL::MIDI_Lighter::Command::Set_Timer1_Top;
+	Data[2] = HAL::Common::Ascii((top & 0xF000) >> 12);
+	Data[3] = HAL::Common::Ascii((top & 0x0F00) >>  8);
+	Data[4] = HAL::Common::Ascii((top & 0x00F0) >>  4);
+	Data[5] = HAL::Common::Ascii((top & 0x000F) >>  0);
+	Data[6] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
+
+	return _USB_Link.Buffer_Write(_Endpoint_TX, Data, 1 + 1 + 4 + 1);
+}
+
+bool HAL::MIDI_Lighter::Set_Timer4_Prescaler(HAL::MIDI_Lighter::Timer4_Presacler prescaler)
+{
+	if (_USB_Link.Open() == false)
+	{
+		return false;
+	}
+
+	uint8_t Data[1 + 1 + 1 + 1];
+
+	Data[0] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
+	Data[1] = (uint8_t)HAL::MIDI_Lighter::Command::Set_Timer4_Prescaler;
+	Data[2] = HAL::Common::Ascii((uint8_t)prescaler);
+	Data[3] = (uint8_t)HAL::MIDI_Lighter::Command::Terminator;
+
+	return _USB_Link.Buffer_Write(_Endpoint_TX, Data, 1 + 1 + 1 + 1);
 }
 
 uint8_t	HAL::MIDI_Lighter::Read_EEPROM(uint32_t address, bool* read_success)

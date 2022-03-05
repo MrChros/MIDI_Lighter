@@ -183,5 +183,8 @@
     <Image Include="Icon\tick.png">
       <Filter>Resource Files\Icon</Filter>
     </Image>
+    <Image Include="Icon\exit.png">
+      <Filter>Resource Files\Icon</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -2,21 +2,24 @@
 
 MIDI_Lighter::Configuration_RGB_Order::Configuration_RGB_Order()
 {
+	System::Drawing::Font^ Font_Bold = gcnew System::Drawing::Font(this->Font->Name, this->Font->Size, System::Drawing::FontStyle::Bold);
+	
 	System::Windows::Forms::TableLayoutPanel^ Table_Layout_Main = gcnew System::Windows::Forms::TableLayoutPanel();
 	Table_Layout_Main->RowCount = 2;
 	Table_Layout_Main->ColumnCount = 4;
 	Table_Layout_Main->Dock = System::Windows::Forms::DockStyle::Top;
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 8)));
-	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute, 100)));
+	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute, 110)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 50)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent, 50)));
 	
-	System::Windows::Forms::Label^ Label_Title = gcnew System::Windows::Forms::Label();
-	Label_Title->Dock = System::Windows::Forms::DockStyle::Top;
-	Label_Title->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-	Label_Title->Text = "RGB Order:";
+		System::Windows::Forms::Label^ Label_Title = gcnew System::Windows::Forms::Label();
+		Label_Title->Dock = System::Windows::Forms::DockStyle::Top;
+		Label_Title->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+		Label_Title->Text = "RGB Order:";
+		Label_Title->Font = Font_Bold;
 	Table_Layout_Main->Controls->Add(Label_Title, 0, 0);
 
 		_ComboBox_RGB_Order = gcnew System::Windows::Forms::ComboBox();

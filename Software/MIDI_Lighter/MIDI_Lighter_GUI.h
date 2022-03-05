@@ -30,6 +30,8 @@ namespace MIDI_Lighter_GUI
 		System::Void Sync_Status_Changed			(MIDI_Lighter::SYNC_STATUS status);
 
 		System::Void Configuration_Changed			(System::Boolean pending);
+
+		System::Void Application_Exit				(System::Object^ sender, System::EventArgs^ e);
 	
 	protected:
 		~MIDI_Lighter_GUI();

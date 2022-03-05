@@ -2,13 +2,18 @@
 
 MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 {
+	this->AutoScaleDimensions = System::Drawing::SizeF(96.0f, 96.0f);
+	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+	
 	_Internal_Update = true;
 	
+	System::Drawing::Font^ Font_Bold	= gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Bold);
+	System::Drawing::Font^ Font_Reguar	= gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Regular);
+
 	System::Windows::Forms::TableLayoutPanel^ Table_Layout_Main = gcnew System::Windows::Forms::TableLayoutPanel();
-	Table_Layout_Main->RowCount		= 10;
+	Table_Layout_Main->RowCount		= 8;
 	Table_Layout_Main->ColumnCount	= 3;
 	Table_Layout_Main->Dock			= System::Windows::Forms::DockStyle::Fill;
-	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  8)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
@@ -17,12 +22,10 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 8)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
 	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 30)));
-//	Table_Layout_Main->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute, 100)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,  100)));
 	Table_Layout_Main->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,  40)));
 
-	System::Drawing::Font^ Font_Label = gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Regular);
 
 	//////////////////
 	// MIDI Channel //
@@ -31,8 +34,8 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 		Label_Channel->Dock = System::Windows::Forms::DockStyle::Top;
 		Label_Channel->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		Label_Channel->Text = "MIDI Channel:";
-		Label_Channel->Font = Font_Label;
-	Table_Layout_Main->Controls->Add(Label_Channel, 0, 1);
+		Label_Channel->Font = Font_Bold;
+	Table_Layout_Main->Controls->Add(Label_Channel, 0, 0);
 
 		_ComboBox_Channel = gcnew System::Windows::Forms::ComboBox();
 		_ComboBox_Channel->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -42,7 +45,7 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 		for (int i = 0; i < 16; i++) { _ComboBox_Channel->Items->Add(System::String::Format("Ch{0,2:D2}", i+1)); }
 		_ComboBox_Channel->SelectedIndex = 0;
 		_ComboBox_Channel->SelectedIndexChanged += gcnew System::EventHandler(this, &Configuration_MIDI::Value_Changed);
-	Table_Layout_Main->Controls->Add(_ComboBox_Channel, 1, 1);
+	Table_Layout_Main->Controls->Add(_ComboBox_Channel, 1, 0);
 	Table_Layout_Main->SetColumnSpan(_ComboBox_Channel, 2);
 
 	/////////////////////
@@ -52,7 +55,7 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 		Label_Horizontal_Line_1->Dock = System::Windows::Forms::DockStyle::Top;
 		Label_Horizontal_Line_1->Height = 2;
 		Label_Horizontal_Line_1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_1, 0, 2);
+	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_1, 0, 1);
 	Table_Layout_Main->SetColumnSpan(Label_Horizontal_Line_1, 3);
 
 	////////////////
@@ -74,8 +77,8 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 			if(i==0)	{ Label->ForeColor = System::Drawing::Color::Red;	} else
 			if(i==1)	{ Label->ForeColor = System::Drawing::Color::Green;	} else
 						{ Label->ForeColor = System::Drawing::Color::Blue;	}
-			Label->Font				= Font_Label;
-		Table_Layout_Main->Controls->Add(Label, 0, 3+i);
+			Label->Font				= Font_Bold;
+		Table_Layout_Main->Controls->Add(Label, 0, 2+i);
 
 			System::Windows::Forms::ComboBox^ ComboBox = gcnew System::Windows::Forms::ComboBox();
 			ComboBox->Dock			= System::Windows::Forms::DockStyle::Fill;
@@ -83,7 +86,7 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 			ComboBox->Font			= gcnew System::Drawing::Font("Courier New", 8.0);
 			ComboBox->Margin		= System::Windows::Forms::Padding(4, 1, 4, 0);
 			ComboBox->SelectedIndexChanged += gcnew System::EventHandler(this, &Configuration_MIDI::Value_Changed);
-		Table_Layout_Main->Controls->Add(ComboBox, 1, 3+i);
+		Table_Layout_Main->Controls->Add(ComboBox, 1, 2+i);
 		Table_Layout_Main->SetColumnSpan(ComboBox, 2);
 
 		_ComboBox_Notes[i] = ComboBox;
@@ -96,15 +99,15 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 		Label_Horizontal_Line_2->Dock = System::Windows::Forms::DockStyle::Top;
 		Label_Horizontal_Line_2->Height = 2;
 		Label_Horizontal_Line_2->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_2, 0, 6);
+	Table_Layout_Main->Controls->Add(Label_Horizontal_Line_2, 0, 5);
 	Table_Layout_Main->SetColumnSpan(Label_Horizontal_Line_2, 3);
 	
 		System::Windows::Forms::Label^ Label_Shift = gcnew System::Windows::Forms::Label();
 		Label_Shift->Dock = System::Windows::Forms::DockStyle::Top;
 		Label_Shift->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 		Label_Shift->Text = "Value Factor:";
-		Label_Shift->Font = Font_Label;
-	Table_Layout_Main->Controls->Add(Label_Shift, 0, 7);
+		Label_Shift->Font = Font_Bold;
+	Table_Layout_Main->Controls->Add(Label_Shift, 0, 6);
 
 		_TrackBar_Factor = gcnew System::Windows::Forms::TrackBar();
 		_TrackBar_Factor->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -114,40 +117,29 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 		_TrackBar_Factor->Minimum = 1;
 		_TrackBar_Factor->TickFrequency = 10;
 		_TrackBar_Factor->ValueChanged += gcnew System::EventHandler(this, &Configuration_MIDI::Value_Changed);
-	Table_Layout_Main->Controls->Add(_TrackBar_Factor, 1, 7);
+	Table_Layout_Main->Controls->Add(_TrackBar_Factor, 1, 6);
 
 		_Label_Factor = gcnew System::Windows::Forms::Label();
 		_Label_Factor->Dock = System::Windows::Forms::DockStyle::Fill;
 		_Label_Factor->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-		_Label_Factor->Font = Font_Label;
-	Table_Layout_Main->Controls->Add(_Label_Factor, 2, 7);
+		_Label_Factor->Font = Font_Reguar;
+	Table_Layout_Main->Controls->Add(_Label_Factor, 2, 6);
 
 
-		System::Windows::Forms::Label^ Label_Skip_Note_Off = gcnew System::Windows::Forms::Label();
-		Label_Skip_Note_Off->Dock = System::Windows::Forms::DockStyle::Top;
-		Label_Skip_Note_Off->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-		Label_Skip_Note_Off->Text = "Skip Note Off:";
-		Label_Skip_Note_Off->Font = Font_Label;
-	Table_Layout_Main->Controls->Add(Label_Skip_Note_Off, 0, 8);
+		System::Windows::Forms::Label^ Label_Skip_Note_Off	= gcnew System::Windows::Forms::Label();
+		Label_Skip_Note_Off->Dock							= System::Windows::Forms::DockStyle::Fill;
+		Label_Skip_Note_Off->TextAlign						= System::Drawing::ContentAlignment::MiddleLeft;
+		Label_Skip_Note_Off->Text							= "Skip Note Off:";
+		Label_Skip_Note_Off->Font							= Font_Bold;
+	Table_Layout_Main->Controls->Add(Label_Skip_Note_Off, 0, 7);
 
-		_CheckBox_Skip_Note_Off = gcnew System::Windows::Forms::CheckBox();	
-		_CheckBox_Skip_Note_Off->Dock = System::Windows::Forms::DockStyle::Top;
-		_CheckBox_Skip_Note_Off->RightToLeft = System::Windows::Forms::RightToLeft::No;
-		_CheckBox_Skip_Note_Off->CheckedChanged += gcnew System::EventHandler(this, &Configuration_MIDI::Value_Changed);
-	Table_Layout_Main->Controls->Add(_CheckBox_Skip_Note_Off, 1, 8);
+		_CheckBox_Skip_Note_Off						= gcnew System::Windows::Forms::CheckBox();	
+		_CheckBox_Skip_Note_Off->Dock				= System::Windows::Forms::DockStyle::Fill;
+		_CheckBox_Skip_Note_Off->RightToLeft		= System::Windows::Forms::RightToLeft::No;
+		_CheckBox_Skip_Note_Off->Padding			= System::Windows::Forms::Padding(0, 3, 0, 0);
+		_CheckBox_Skip_Note_Off->CheckedChanged	   += gcnew System::EventHandler(this, &Configuration_MIDI::Value_Changed);
+	Table_Layout_Main->Controls->Add(_CheckBox_Skip_Note_Off, 1, 7);
 
-//	_GroupBox_Main = gcnew System::Windows::Forms::GroupBox();
-//	_GroupBox_Main->Text = "Configuration MIDI";
-//	_GroupBox_Main->Dock = System::Windows::Forms::DockStyle::Fill;
-//	_GroupBox_Main->Font = gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Bold);
-//	_GroupBox_Main->Controls->Add(Table_Layout_Main);
-//
-//	for each (System::Windows::Forms::Control^ Control in this->_GroupBox_Main->Controls)
-//	{
-//		Control->Font = gcnew System::Drawing::Font(this->Font, System::Drawing::FontStyle::Regular);
-//	}
-
-//	this->Controls->Add(_GroupBox_Main);
 
 	this->Controls->Add(Table_Layout_Main);
 
@@ -290,7 +282,11 @@ MIDI_Lighter::Configuration_MIDI::Configuration_MIDI()
 	_ComboBox_Notes[1]->SelectedIndex = 0;
 	_ComboBox_Notes[2]->SelectedIndex = 0;
 
+	Label_Factor_Update(_TrackBar_Factor->Value);
+
 	_Internal_Update = false;
+
+	this->PerformAutoScale();
 }
 
 System::Void MIDI_Lighter::Configuration_MIDI::Update(MIDI_Lighter_Wrapper::Configuration_MIDI^ configuration_midi)

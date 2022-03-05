@@ -3,19 +3,31 @@
 MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 {
 	this->Text = L"MIDI Lighter";
-	this->Size = System::Drawing::Size(1200, 480);
+	this->Size = System::Drawing::Size(1000, 460);
+//	this->AutoScaleDimensions = System::Drawing::SizeF(96.0f, 96.0f);
+//	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 
 	_Resources = gcnew System::Resources::ResourceManager("MIDI_Lighter.MIDI_Lighter", System::Reflection::Assembly::GetExecutingAssembly());
 
+	_Split_Container = gcnew System::Windows::Forms::SplitContainer();
+	_Split_Container->Dock					= System::Windows::Forms::DockStyle::Fill;
+	_Split_Container->BorderStyle			= System::Windows::Forms::BorderStyle::Fixed3D;
+	_Split_Container->Cursor				= System::Windows::Forms::Cursors::SizeWE;
+//	_Split_Container->AutoScaleDimensions	= System::Drawing::SizeF(96.0f, 96.0f);
+//	_Split_Container->AutoScaleMode			= System::Windows::Forms::AutoScaleMode::Font;
+	_Split_Container->Panel1->Cursor		= System::Windows::Forms::Cursors::Default;
+	_Split_Container->Panel2->Cursor		= System::Windows::Forms::Cursors::Default;
+	_Split_Container->SplitterMoved += gcnew System::Windows::Forms::SplitterEventHandler(this, &MIDI_Lighter_GUI::Split_Container_SplitterMoved);
 
 		_Device_List = gcnew MIDI_Lighter::Device_List();
 		_Device_List->Dock = System::Windows::Forms::DockStyle::Fill;
-
+	_Split_Container->Panel1->Controls->Add(_Device_List);
 	
 		System::Windows::Forms::TableLayoutPanel^ Table_Layout_Edit = gcnew System::Windows::Forms::TableLayoutPanel();
-		Table_Layout_Edit->RowCount		= 3;
-		Table_Layout_Edit->ColumnCount	= 1;
-		Table_Layout_Edit->Dock			= System::Windows::Forms::DockStyle::Fill;
+		Table_Layout_Edit->RowCount			= 3;
+		Table_Layout_Edit->ColumnCount		= 1;
+		Table_Layout_Edit->Dock				= System::Windows::Forms::DockStyle::Fill;
+//		Table_Layout_Edit->AutoScaleMode	= 
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 260)));		// 0
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent,  100)));		// 1
 		Table_Layout_Edit->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,  30)));		// 2
@@ -23,36 +35,51 @@ MIDI_Lighter_GUI::MIDI_Lighter_GUI::MIDI_Lighter_GUI()
 
 			_Device					= gcnew MIDI_Lighter::Device();
 			_Device->Dock			= System::Windows::Forms::DockStyle::Fill;
-			_Device->BorderStyle	= System::Windows::Forms::BorderStyle::Fixed3D;
+//			_Device->BorderStyle	= System::Windows::Forms::BorderStyle::Fixed3D;
 		Table_Layout_Edit->Controls->Add(_Device, 0, 0);
 
 			_Debug					= gcnew MIDI_Lighter::Debug(_Device_List);
 			_Debug->Dock			= System::Windows::Forms::DockStyle::Fill;
-			_Debug->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
+//			_Debug->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
 		Table_Layout_Edit->Controls->Add(_Debug, 0, 1);
 
 			_Status_Bar = gcnew MIDI_Lighter::Status_Bar();
 		Table_Layout_Edit->Controls->Add(_Status_Bar, 0, 2);
+	_Split_Container->Panel2->Controls->Add(Table_Layout_Edit);
+
+	////////////////
+	// Menu Strip //
+	////////////////
+		System::Windows::Forms::MenuStrip^ Menu_Strip = gcnew System::Windows::Forms::MenuStrip();
+			
+			System::Windows::Forms::ToolStripMenuItem^ Item_File = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_File->Text = "File";
+			Item_File->DropDownItems->Add("Refresh Devices", (cli::safe_cast<System::Drawing::Image^>(_Resources->GetObject(L"arrow_refresh"))), nullptr);
+			Item_File->DropDownItems->Add(gcnew System::Windows::Forms::ToolStripSeparator());
+			Item_File->DropDownItems->Add("Exit", (cli::safe_cast<System::Drawing::Image^>(_Resources->GetObject(L"exit"))), gcnew System::EventHandler(this, &MIDI_Lighter_GUI::Application_Exit));
+		Menu_Strip->Items->Add(Item_File);
+
+			System::Windows::Forms::ToolStripMenuItem^ Item_Preset = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_Preset->Text = "Configuration Presets";
+		Menu_Strip->Items->Add(Item_Preset);
+
+			System::Windows::Forms::ToolStripMenuItem^ Item_Help = gcnew System::Windows::Forms::ToolStripMenuItem();
+			Item_Help->Text = "Help";
+		Menu_Strip->Items->Add(Item_Help);
+	
 
 	
-	_Split_Container = gcnew System::Windows::Forms::SplitContainer();
-	_Split_Container->Dock				= System::Windows::Forms::DockStyle::Fill;
-	_Split_Container->BorderStyle		= System::Windows::Forms::BorderStyle::Fixed3D;
-	_Split_Container->Cursor			= System::Windows::Forms::Cursors::SizeWE;
-	_Split_Container->Panel1->Cursor	= System::Windows::Forms::Cursors::Default;
-	_Split_Container->Panel2->Cursor	= System::Windows::Forms::Cursors::Default;
-	_Split_Container->SplitterMoved    += gcnew System::Windows::Forms::SplitterEventHandler(this, &MIDI_Lighter_GUI::Split_Container_SplitterMoved);
-	
-	
-	_Split_Container->Panel1->Controls->Add(_Device_List);
-	_Split_Container->Panel2->Controls->Add(Table_Layout_Edit);
+
 
 
 	this->Controls->Add(_Split_Container);
+	this->Controls->Add(Menu_Strip);
+	
 
 
-	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this, &MIDI_Lighter_GUI::Connection_Connection_Changed);
-	_Device_List->Sync_Status_Update					+= gcnew MIDI_Lighter::Sync_Status_Update					(this, &MIDI_Lighter_GUI::Sync_Status_Changed);
+	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(this,		&MIDI_Lighter_GUI		::Connection_Connection_Changed);
+	_Device_List->Connection_Changed					+= gcnew MIDI_Lighter::Connection_Changed					(_Device,	&MIDI_Lighter::Device	::Connection_Connection_Changed);
+	_Device_List->Sync_Status_Update					+= gcnew MIDI_Lighter::Sync_Status_Update					(this,		&MIDI_Lighter_GUI		::Sync_Status_Changed);
 	
 	_Device_List->Configuration_MIDI_Update				+= gcnew MIDI_Lighter::Configuration_MIDI_Update			(_Device, &MIDI_Lighter::Device::Set_Configuration_MIDI);
 	_Device_List->Configuration_No_Data_Light_Update	+= gcnew MIDI_Lighter::Configuration_No_Data_Light_Update	(_Device, &MIDI_Lighter::Device::Set_Configuration_No_Data_Light);
@@ -93,4 +120,9 @@ System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Sync_Status_Changed(MIDI_Lighte
 System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Configuration_Changed(System::Boolean pending)
 {
 	
+}
+
+System::Void MIDI_Lighter_GUI::MIDI_Lighter_GUI::Application_Exit(System::Object^ sender, System::EventArgs^ e)
+{
+	System::Windows::Forms::Application::Exit();
 }

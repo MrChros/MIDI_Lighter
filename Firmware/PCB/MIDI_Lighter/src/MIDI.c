@@ -252,7 +252,6 @@ void MIDI_Process(void)
 						_Note_Off_Pending[_Parsing.Color]	= FALSE;
 						_Note_Off_Counter[_Parsing.Color]	= 0;
 						
-						SPI_CONST_STRING("N");
 					}
 					else if(_Parsing.Event == MIDI_COMPARE_NOTE_OFF)
 					{
@@ -260,8 +259,6 @@ void MIDI_Process(void)
 						{
 							_Note_Off_Pending[_Parsing.Color]	= TRUE;
 							_Note_Off_Counter[_Parsing.Color]	= NOTE_OFF_TIMEOUT;
-							
-							SPI_CONST_STRING("F");
 						}
 						else
 						{
@@ -328,8 +325,6 @@ void MIDI_Process(void)
 				_Color[i]				= 0;
 				_Note_Off_Pending[i]	= FALSE;
 				_Update_LED_Strip		= TRUE;
-
-				SPI_CONST_STRING("A");
 			}
 		}
 	}

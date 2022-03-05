@@ -119,7 +119,7 @@
       <AdditionalDependencies>.\WinUSB_Lib\setupapi.lib;.\WinUSB_Lib\winusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\WinUSB_Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>Main</EntryPointSymbol>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -192,6 +192,7 @@
     <Image Include="Icon\connect.png" />
     <Image Include="Icon\cross.png" />
     <Image Include="Icon\disconnect.png" />
+    <Image Include="Icon\exit.png" />
     <Image Include="Icon\help.png" />
     <Image Include="Icon\palette.png" />
     <Image Include="Icon\tick.png" />

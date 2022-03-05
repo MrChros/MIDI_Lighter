@@ -23,6 +23,8 @@
 
 #define FACTOR_200MS					(uint16_t)40	// 40 * 5ms = 200ms (in this case: MS = milliseconds)
 
+#define TIMER1_DEFAULT_TOP				2000			// ~1ms
+
 ////////////////////////
 // Button Pin Defines //
 ////////////////////////
@@ -83,6 +85,11 @@ ISR(TIMER0_COMPA_vect)
 
 ISR(TIMER1_COMPA_vect)
 {
+	TIFR1 |= (1 << OCF1B);
+}
+
+ISR(TIMER3_COMPA_vect)
+{
 	uint8_t Button_Value = ((BUTTON_PIN_REG & (1 << BUTTON_PIN_NO)) > 0);
 	
 	if(Button_Value == PRESSED)
@@ -113,7 +120,7 @@ ISR(TIMER1_COMPA_vect)
 
 ISR(INT6_vect)
 {
-	if(TCCR1B == 0)
+	if(TCCR3B == 0)
 	{
 		_Timer_Button_Counter	= 0;
 		_Button_Short_Pressed	= FALSE;
@@ -154,12 +161,19 @@ void Timer_And_Button_Init(void)
 	TCCR0B |= (1 << CS02) | (1 << CS00);	// Enable Timer with Prescaler of 1024
 
 
+	/////////////////////////////////
+	// ADC Timer (Timer 1; 16 Bit) //
+	/////////////////////////////////
+	TIMSK1	= (1 << OCIE1A);				// Interrupt on Compare Match A
+	Timer_Set_Timer1_Top(TIMER1_DEFAULT_TOP);
+
+
 	////////////////////////////////////
-	// Button Timer (Timer 1; 16 Bit) //
+	// Button Timer (Timer 3; 16 Bit) //
 	////////////////////////////////////
-	OCR1A	= 1562;							// Compare value (1562 = ~100ms)
-	TCNT1	= 0;							// Reset Count Value
-	TIMSK1 |= (1 << OCIE1A);				// Enable overflow interrupt
+	OCR3A	= 1562;							// Compare value (1562 = ~100ms)
+	TCNT3	= 0;							// Reset Count Value
+	TIMSK3 |= (1 << OCIE3A);				// Enable overflow interrupt
 	
 	
 	////////////////////////////
@@ -199,13 +213,13 @@ uint8_t	Timer_General_On_LED_Blick(void)
 
 void Timer_Button_Start(void)
 {
-	TCNT1	= 0;										// Reset Count Value		
-	TCCR1B |= (1 << WGM12) | (1 << CS12) | (1 << CS10);	// Enable Timer with Prescaler of 1024 in CTC Mode
+	TCNT3	= 0;										// Reset Count Value		
+	TCCR3B |= (1 << WGM32) | (1 << CS32) | (1 << CS30);	// Enable Timer with Prescaler of 1024 in CTC Mode
 }
 
 void Timer_Button_Stop(void)
 {
-	TCCR1B	= 0;										// Stop Timer
+	TCCR3B	= 0;										// Stop Timer
 }
 
 uint8_t Button_Short_Pressed(void)
@@ -240,4 +254,18 @@ void Timer_No_Data_Light_Reset(void)
 uint8_t	Timer_No_Data_Light_On(void)
 {
 	return _No_Data_Light_On;
+}
+
+void Timer_Set_Timer1_Top(uint16_t top)
+{
+	if(top > 0)
+	{
+		TCCR1B	= 0;							// Disable Timer 1
+		TCNT1	= 0;							// Reset Count Value
+	
+		OCR1A	= 1000;							// Set Compare values
+		OCR1B	= OCR1A;
+		
+		TCCR1B |= (1 << WGM12) | (1 << CS11);	// Enable Timer with Prescaler of 8 in CTC Mode
+	}
 }

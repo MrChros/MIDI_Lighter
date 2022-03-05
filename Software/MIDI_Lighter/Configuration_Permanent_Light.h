@@ -27,6 +27,6 @@ namespace MIDI_Lighter
 
 		System::Boolean							_Internal_Update;
 
-		System::Void Button_Color_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void Label_Color_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

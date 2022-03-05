@@ -12,12 +12,19 @@
 #include "ADC.h"
 
 // ============================================================================================
+#define	OFF				99
 #define	TEST			2
 #define	CURRENT			1
 #define	TEMPERATURE		0
 
+#define MMA_SHIFT		7
+
 // ============================================================================================
-volatile uint16_t	_ADC_Value;
+volatile uint32_t	_ADC_Value;
+volatile uint32_t	_Moving_Average_Value;
+volatile uint32_t	_Moving_Average_Sum;
+
+volatile uint16_t	_Initial_Value_Counter;
 
 /*******************************************************************
 	Interrupt Service Routines
@@ -25,7 +32,18 @@ volatile uint16_t	_ADC_Value;
 ISR(ADC_vect)
 {
 	_ADC_Value  = ADCL;
-	_ADC_Value |= (((uint16_t)ADCH) << 8);
+	_ADC_Value |= (((uint32_t)ADCH) << 8);
+
+	if(_Initial_Value_Counter < (uint16_t)(1 << MMA_SHIFT))
+	{
+		_Moving_Average_Sum	   += _ADC_Value;
+	}
+	else
+	{
+		_Moving_Average_Sum	   -= _Moving_Average_Value;
+		_Moving_Average_Sum	   += _ADC_Value;
+		_Moving_Average_Value	= _Moving_Average_Sum >> MMA_SHIFT;
+	}
 }
 
 /*******************************************************************
@@ -33,13 +51,19 @@ ISR(ADC_vect)
 *******************************************************************/
 void ADC_Init(void)
 {
-	_ADC_Value = 0;
+	_ADC_Value				= 0;
+	_Moving_Average_Sum		= 0;
+	_Moving_Average_Value	= 0;
 
-	return;
+	_Initial_Value_Counter	= 0;
+
+
+	uint8_t Value_To_Measure = OFF;
 	
-	uint8_t Value_To_Measure = CURRENT;
-
-//	DIDR0 =  (0b1		<< ADC6D);		// Digital Input Disable
+	if(Value_To_Measure == OFF)
+	{
+		return;
+	}
 
 	if(Value_To_Measure == CURRENT)
 	{
@@ -48,7 +72,7 @@ void ADC_Init(void)
 				 (0b000110	<< MUX0);	// Select ADC6 as input for the ADC MUX (won't change or should not...), internal Temperature Sensor would be another option
 
 
-		ADCSRB = (0b0011	<< ADTS0) |	// Select Timer0 as Trigger for ADC Conversion => ADC Conversion every 5ms, 200 Measurements/s)
+		ADCSRB = (0b0101	<< ADTS0) |	// Select Timer1 Compare Match B as Trigger for ADC Conversion => ADC Conversion every 1ms, 1000 Measurements/s)
 				 (0b0		<< MUX5);	// Needs to be Zero for ADC6
 	}
 	else if(Value_To_Measure == TEST)
@@ -75,14 +99,14 @@ void ADC_Init(void)
 	ADCSRA = (0b1		<< ADEN)  |		// Enable ADC
 			 (0b1		<< ADATE) |		// Auto Trigger enable (Trigger is set in ADCSRB above)
 			 (0b1		<< ADIE)  |		// Enable "Conversion Complete" Interrupt
-			 (0b110		<< ADPS0);		// ADC Prescaler Selection: Current Selection results in "64"
+			 (0b001		<< ADPS0);		// ADC Prescaler Selection: Current Selection results in "2"
 										// (not really sure what this is about, for more information check table 24-5 on page 311)
 }
 
 /*******************************************************************
 	Interface functions
 *******************************************************************/
-uint16_t ADC_Get_Value(void)
+uint32_t ADC_Get_Value(void)
 {
-	return _ADC_Value;
+	return _Moving_Average_Sum;
 }

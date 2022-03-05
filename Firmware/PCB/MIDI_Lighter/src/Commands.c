@@ -13,7 +13,9 @@
 #include "Help.h"
 #include "EEPROM.h"
 #include "Watchdog.h"
+#include "LED_Strip.h"
 #include "Configuration.h"
+#include "Timer_and_Button.h"
 
 // ============================================================================================
 // Defines
@@ -55,6 +57,12 @@
 #define COMMAND_ADC_GET_LENGTH				 1
 
 
+#define COMMAND_SET_TIMER1_TOP				'V'
+#define COMMAND_SET_TIMER1_TOP_LENGTH		 5
+
+#define COMMAND_SET_TIMER4_PRESCALER		'W'
+#define COMMAND_SET_TIMER4_PRESCALER_LENGTH	 2
+
 #define COMMAND_READ_EEPROM					'y'
 #define COMMAND_READ_EEPROM_LENGTH			 4
 
@@ -82,7 +90,7 @@ void Command_Parse_Command(void);
 
 void Command_Parse_Command(void)
 {
-	uint8_t  Send_Success = FALSE;
+	uint8_t				Send_Success = FALSE;
 	
 	if(_Commands_Buffer.Count == 0) { return; }
 	
@@ -166,14 +174,24 @@ void Command_Parse_Command(void)
 
 		case COMMAND_ADC_GET:
 			if(_Commands_Buffer.Count != COMMAND_ADC_GET_LENGTH) { break; }
-			Send_Success = USB_Send_Int_Hex(ADC_Get_Value(), 3, FALSE);	if(Send_Success==FALSE) { break; }
+			Send_Success = USB_Send_Int_Hex(ADC_Get_Value(), 8, FALSE);	if(Send_Success==FALSE) { break; }
 			Send_Success = USB_Send_Char(COMMAND_TERMINATOR);
 			break;
 
 		
+		///////////////////////////////////////////
+		//   Debug Commands after this comment   //
+		// Not meant for use in real application //
+		///////////////////////////////////////////
+		case COMMAND_SET_TIMER1_TOP:
+			if(_Commands_Buffer.Count != COMMAND_SET_TIMER1_TOP_LENGTH) { break; }
+			Timer_Set_Timer1_Top(CharArray_To_Number(&_Commands_Buffer.Data[1], 4));
+			break;
 
-
-
+		case COMMAND_SET_TIMER4_PRESCALER:
+			if(_Commands_Buffer.Count != COMMAND_SET_TIMER4_PRESCALER_LENGTH) { break; }
+			LED_Strip_Set_Clock_Prescaler(CharArray_To_Number(&_Commands_Buffer.Data[1], 1));
+			break;
 
 		case COMMAND_WRITE_EEPROM:
 			if(_Commands_Buffer.Count != COMMAND_WRITE_EEPROM_LENGTH) { break; }
