@@ -68,3 +68,4 @@ namespace MIDI_Lighter
 		System::Void Update_Header							(System::String^ device_name);
 	};
 }
+

@@ -40,4 +40,3 @@ namespace MIDI_Lighter_GUI
 		MIDI_Lighter_GUI(void);
 	};
 }
-

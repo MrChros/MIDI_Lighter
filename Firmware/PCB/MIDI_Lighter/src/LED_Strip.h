@@ -34,5 +34,4 @@ void LED_Strip_Update(uint8_t red, uint8_t green, uint8_t blue);
 void LED_Strip_Set_Clock_Prescaler(uint8_t prescaler);
 
 
-
 #endif /* LED_STRIP_H_ */

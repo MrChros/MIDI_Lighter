@@ -298,4 +298,3 @@ private:
 
 	System::Void SystemString2StdString(System::String^ s, std::string& os);
 };
-

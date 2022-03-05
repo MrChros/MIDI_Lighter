@@ -406,3 +406,4 @@ System::UInt32 MIDI_Lighter::Device_List::Read_ADC()
 
 	return 0;
 }
+

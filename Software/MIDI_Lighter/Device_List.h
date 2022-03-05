@@ -79,4 +79,3 @@ namespace MIDI_Lighter
 		System::Void Status_Cell_Update						();
 	};
 }
-

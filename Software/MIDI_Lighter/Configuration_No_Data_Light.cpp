@@ -126,4 +126,5 @@ System::Void MIDI_Lighter::Configuration_No_Data_Light::Value_Changed(System::Ob
 	Configuration_No_Data_Light->Deactivate = (MIDI_Lighter_Wrapper::No_Data_Light_Deactivate)_ComboBox_Deactivate->SelectedIndex;
 
 	Update_Values(Configuration_No_Data_Light);
+
 }
